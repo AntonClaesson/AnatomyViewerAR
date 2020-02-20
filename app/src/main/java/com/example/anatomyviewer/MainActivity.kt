@@ -7,9 +7,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import com.google.ar.core.AugmentedImage
-import com.google.ar.core.AugmentedImageDatabase
-import com.google.ar.core.HitResult
+import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.HitTestResult
 
@@ -19,11 +17,18 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var arFragment: ArFragment
 
+    // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
+    val dynamicTracking: Boolean = false
+
     // Enables or disables search of new trackable images
     var trackNewImages: Boolean = true
 
     // The image currently being tracked by ARCore
     var currentlyTrackedImage: AugmentedImage? = null
+        set(value) {
+            field = value
+            createModelForTrackedImage(value)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,15 +36,15 @@ class MainActivity : AppCompatActivity() {
 
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as ArFragment
 
+        // Setup listeners
         arFragment.arSceneView.setOnTouchListener(::onScreenTouch)
-
-        //Sets the frame update listener
         arFragment.arSceneView.scene.addOnUpdateListener(::onUpdate)
     }
 
 
     private fun onScreenTouch(view: View, motionEvent: MotionEvent): Boolean {
         trackNewImages = true
+        currentlyTrackedImage = null
         Toast.makeText(arFragment.requireContext(), "Scanning for new image", Toast.LENGTH_SHORT).show()
         return true
     }
@@ -48,7 +53,27 @@ class MainActivity : AppCompatActivity() {
     /// Called once per frame right before the scene is updated.
     private fun onUpdate(frameTime: FrameTime){
         val frame = arFragment.arSceneView.arFrame ?: return
+        // If tracking is ok, we proceed
+        if (trackingStateOK(frame)) {
+            val updatedTrackedImage = updateTrackedImageForFrame(frame) ?: return
+            Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ updatedTrackedImage.name, Toast.LENGTH_LONG).show()
+            updateModelForTrackedImage(updatedTrackedImage)
+        } else {
+            // TODO: Handle bad tracking state
+        }
+    }
 
+    // Checks whether tracking is active or not.
+    private fun trackingStateOK(frame: Frame): Boolean {
+        if (frame.camera.trackingState == TrackingState.TRACKING) return true
+        return false
+    }
+
+    // Updates the currently tracked image when *trackNewImages* is true and a new tracked image is found.
+    // In that case the model corresponding to the updated image is added to the scene.
+    // Returns a reference to the updated image, or null if there is no update.
+    // This reference is referencing the same instance as the variable *currentlyTrackedImage*
+    private fun updateTrackedImageForFrame(frame: Frame): AugmentedImage? {
         val updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
 
         // Images which are tracked by most recent location
@@ -58,11 +83,11 @@ class MainActivity : AppCompatActivity() {
         val fullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING }
 
         // Return if no images are currently fully visible
-        if (fullTrackingImages.isEmpty()) return
+        if (fullTrackingImages.isEmpty()) return null
 
         // Make first tracked image active if preconditions are met
         fullTrackingImages.firstOrNull()?.let { augmentedImage ->
-            if (currentlyTrackedImage == augmentedImage || !trackNewImages) return
+            if (currentlyTrackedImage == augmentedImage || !trackNewImages) return null
 
             // Sets the currently tracked image for which the 3D model will be rendered
             currentlyTrackedImage = augmentedImage
@@ -70,8 +95,22 @@ class MainActivity : AppCompatActivity() {
             // Disable tracking of new images until user input requests differently
             trackNewImages = false
 
-            Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ augmentedImage.name, Toast.LENGTH_LONG).show()
+            return augmentedImage
         }
+
+        return null
+    }
+
+    // Adds a 3D model corresponding to the tracked image to the scene.
+    private fun createModelForTrackedImage(image: AugmentedImage?) {
+        val trackedImage = image ?: return
+        // TODO: Create corresponding renderable and add to scene above the image
+
+    }
+
+    // Updates location of the 3D model to match that of the tracked image
+    private fun updateModelForTrackedImage(image: AugmentedImage) {
+        // TODO: Update model location to follow the tracked image
 
     }
 
