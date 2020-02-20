@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.ar.sceneform.ux.ArFragment
 import android.util.Log
+import android.widget.Toast
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.sceneform.FrameTime
@@ -49,7 +50,10 @@ class MainActivity : AppCompatActivity() {
 
         // Make first tracked image active
         fullTrackingImages.firstOrNull()?.let { augmentedImage ->
+            if (currentlyTrackedImage == augmentedImage) return
+
             currentlyTrackedImage = augmentedImage
+            Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ augmentedImage.name, Toast.LENGTH_LONG).show()
         }
 
     }

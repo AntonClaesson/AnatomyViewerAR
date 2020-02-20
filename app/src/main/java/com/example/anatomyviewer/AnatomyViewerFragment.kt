@@ -25,7 +25,7 @@ open class AnatomyViewerFragment : ArFragment() {
         this.planeDiscoveryController.setInstructionView(null)
 
         //Hides the plane renderering
-        this.arSceneView.planeRenderer.isVisible = false
+        this.arSceneView.planeRenderer.isVisible = true
 
         return view
     }
@@ -52,7 +52,7 @@ open class AnatomyViewerFragment : ArFragment() {
 
         return super.getSessionConfiguration(session).also { config ->
 
-            config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+            config.lightEstimationMode = Config.LightEstimationMode.AMBIENT_INTENSITY
             config.focusMode = Config.FocusMode.AUTO
 
             if (!setupAugmentedImageDatabase(config, session)) {
@@ -66,8 +66,8 @@ open class AnatomyViewerFragment : ArFragment() {
 
         private val TAG: String = AnatomyViewerFragment::class.java.simpleName
 
-        private val IMAGE_1_NAME: String = "image_1.jpg"
-        private val IMAGE_2_NAME: String = "image_2.jpg"
+        private val IMAGE_1_NAME: String = "building.jpg"
+        private val IMAGE_2_NAME: String = "earth.jpg"
 
     }
 }
