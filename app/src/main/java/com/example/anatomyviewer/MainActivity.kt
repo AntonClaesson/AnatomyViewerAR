@@ -4,29 +4,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.ar.sceneform.ux.ArFragment
 import android.util.Log
+import android.widget.Toast
+import com.google.ar.core.AugmentedImage
+import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.sceneform.FrameTime
 
 private val TAG: String = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
 
-
     lateinit var arFragment: ArFragment
+
+    var currentlyTrackedImage: AugmentedImage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.d(TAG, "Hello World")
-
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as ArFragment
-
-        //Hides the scan floor gif
-        arFragment.planeDiscoveryController.hide()
-        arFragment.planeDiscoveryController.setInstructionView(null)
-
-        //Hides the plane renderering
-        arFragment.arSceneView.planeRenderer.isVisible = false
 
         //Called whenever user taps an AR plane
         arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
@@ -38,8 +33,28 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    /// Called once per frame right before Scene is updated.
+    /// Called once per frame right before the scene is updated.
     private fun onUpdate(frameTime: FrameTime){
+        val frame = arFragment.arSceneView.arFrame ?: return
+
+        val updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
+
+        // Images which are tracked by most recent location
+        //val nonFullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }
+
+        // Images which are being tracked by their actual location (in frame)
+        val fullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING }
+
+        // Return if no images are currently fully visible
+        if (fullTrackingImages.isEmpty()) return
+
+        // Make first tracked image active
+        fullTrackingImages.firstOrNull()?.let { augmentedImage ->
+            if (currentlyTrackedImage == augmentedImage) return
+
+            currentlyTrackedImage = augmentedImage
+            Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ augmentedImage.name, Toast.LENGTH_LONG).show()
+        }
 
     }
 
