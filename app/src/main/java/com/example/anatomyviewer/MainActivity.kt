@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.ar.sceneform.ux.ArFragment
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Toast
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.AugmentedImageDatabase
+import com.google.ar.core.HitResult
 import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.HitTestResult
 
 private val TAG: String = MainActivity::class.java.simpleName
 
@@ -15,6 +19,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var arFragment: ArFragment
 
+    // Enables or disables search of new trackable images
+    var trackNewImages: Boolean = true
+
+    // The image currently being tracked by ARCore
     var currentlyTrackedImage: AugmentedImage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,13 +31,17 @@ class MainActivity : AppCompatActivity() {
 
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as ArFragment
 
-        //Called whenever user taps an AR plane
-        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-            Log.d(TAG, "Tapped")
+        arFragment.arSceneView.setOnTouchListener(::onScreenTouch)
 
-        }
         //Sets the frame update listener
         arFragment.arSceneView.scene.addOnUpdateListener(::onUpdate)
+    }
+
+
+    private fun onScreenTouch(view: View, motionEvent: MotionEvent): Boolean {
+        trackNewImages = true
+        Toast.makeText(arFragment.requireContext(), "Scanning for new image", Toast.LENGTH_SHORT).show()
+        return true
     }
 
 
@@ -48,11 +60,16 @@ class MainActivity : AppCompatActivity() {
         // Return if no images are currently fully visible
         if (fullTrackingImages.isEmpty()) return
 
-        // Make first tracked image active
+        // Make first tracked image active if preconditions are met
         fullTrackingImages.firstOrNull()?.let { augmentedImage ->
-            if (currentlyTrackedImage == augmentedImage) return
+            if (currentlyTrackedImage == augmentedImage || !trackNewImages) return
 
+            // Sets the currently tracked image for which the 3D model will be rendered
             currentlyTrackedImage = augmentedImage
+
+            // Disable tracking of new images until user input requests differently
+            trackNewImages = false
+
             Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ augmentedImage.name, Toast.LENGTH_LONG).show()
         }
 
