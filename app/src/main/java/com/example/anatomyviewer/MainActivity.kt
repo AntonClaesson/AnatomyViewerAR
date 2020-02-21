@@ -82,7 +82,6 @@ class MainActivity : AppCompatActivity() {
         if (trackingStateOK(frame)) {
             val updatedTrackedImage = updateTrackedImageForFrame(frame) ?: return
             Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ updatedTrackedImage.name, Toast.LENGTH_LONG).show()
-            updateModelForTrackedImage(updatedTrackedImage)
         } else {
             // TODO: Handle bad tracking state
         }
@@ -153,18 +152,5 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Could not create ModelRenderable", throwable)
                 return@exceptionally null
             }
-
     }
-
-
-
-    // Updates location of the 3D model to match that of the tracked image
-    private fun updateModelForTrackedImage(image: AugmentedImage) {
-        // TODO: Update model location to follow the tracked image?
-
-    }
-
-
-
-
 }
