@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.ar.sceneform.plugin'
 
 android {
     compileSdkVersion 29
@@ -43,3 +44,14 @@ dependencies {
     // Provides ArFragment, and other UX resources.
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
 }
+
+
+sceneform.asset('sampledata/dino.fbx',
+        'default',
+        'sampledata/dino.sfa',
+        'src/main/res/raw/dino')
+
+sceneform.asset('sampledata/lion.fbx',
+        'default',
+        'sampledata/lion.sfa',
+        'src/main/res/raw/lion')

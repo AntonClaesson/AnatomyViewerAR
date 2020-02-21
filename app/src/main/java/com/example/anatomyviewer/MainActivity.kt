@@ -10,12 +10,27 @@ import android.widget.Toast
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.HitTestResult
+import com.google.ar.sceneform.ux.TransformableNode
+import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.core.Anchor
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.rendering.ModelRenderable
+
+
 
 private val TAG: String = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var arFragment: ArFragment
+
+    private lateinit var modelRenderable: ModelRenderable
+    private var modelAnchorNode: AnchorNode? = null
+    private var modelNode: TransformableNode? = null
 
     // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
     val dynamicTracking: Boolean = false
@@ -45,6 +60,16 @@ class MainActivity : AppCompatActivity() {
     private fun onScreenTouch(view: View, motionEvent: MotionEvent): Boolean {
         trackNewImages = true
         currentlyTrackedImage = null
+
+        if (modelAnchorNode != null) {
+            val anchorNode = modelAnchorNode!!
+            if (anchorNode.anchor != null) {
+                anchorNode.anchor!!.detach()
+            }
+            arFragment.arSceneView.scene.removeChild(modelAnchorNode)
+        }
+
+
         Toast.makeText(arFragment.requireContext(), "Scanning for new image", Toast.LENGTH_SHORT).show()
         return true
     }
@@ -101,17 +126,45 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
-    // Adds a 3D model corresponding to the tracked image to the scene.
+    // Adds the 3D model corresponding to the tracked image to the scene.
     private fun createModelForTrackedImage(image: AugmentedImage?) {
         val trackedImage = image ?: return
-        // TODO: Create corresponding renderable and add to scene above the image
+
+        val model = if (trackedImage.name == "earth.jpg") R.raw.lion else R.raw.dino
+
+        // Load model from file
+        ModelRenderable.builder().setSource(arFragment.requireContext(), model).build().thenAccept { renderable ->
+            modelRenderable = renderable
+            renderable.isShadowCaster = true
+            renderable.isShadowReceiver = false
+
+            val anchor = trackedImage.createAnchor(trackedImage.centerPose)
+            modelAnchorNode = AnchorNode(anchor).apply {
+                setParent(arFragment.arSceneView.scene)
+            }
+
+            val node = TransformableNode(arFragment.transformationSystem)
+            modelNode = node
+            node.setParent(modelAnchorNode)
+            node.renderable = modelRenderable
+            node.select()
+        }
+            .exceptionally { throwable ->
+                Log.e(TAG, "Could not create ModelRenderable", throwable)
+                return@exceptionally null
+            }
 
     }
+
+
 
     // Updates location of the 3D model to match that of the tracked image
     private fun updateModelForTrackedImage(image: AugmentedImage) {
-        // TODO: Update model location to follow the tracked image
+        // TODO: Update model location to follow the tracked image?
 
     }
+
+
+
 
 }
