@@ -9,17 +9,9 @@ import android.view.View
 import android.widget.Toast
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.HitTestResult
-import com.google.ar.sceneform.ux.TransformableNode
-import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.core.Anchor
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.rendering.ModelRenderable
-
+import com.google.ar.sceneform.ux.TransformableNode
 
 
 private val TAG: String = MainActivity::class.java.simpleName
