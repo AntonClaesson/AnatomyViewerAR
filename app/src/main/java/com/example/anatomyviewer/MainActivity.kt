@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.TransformableNode
 
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private var modelNode: TransformableNode? = null
 
     // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
-    val dynamicTracking: Boolean = false
+    val dynamicTrackingEnabled: Boolean = true
 
     // Enables or disables search of new trackable images
     var trackNewImages: Boolean = true
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             val updatedTrackedImage = updateTrackedImageForFrame(frame) ?: return
             Toast.makeText(arFragment.requireContext(), "Changed to tracking: "+ updatedTrackedImage.name, Toast.LENGTH_LONG).show()
         } else {
-            // TODO: Handle bad tracking state
+            handleBadTracking()
         }
     }
 
@@ -84,6 +85,11 @@ class MainActivity : AppCompatActivity() {
         if (frame.camera.trackingState == TrackingState.TRACKING) return true
         return false
     }
+
+    private fun handleBadTracking() {
+        //TODO: Handle bad tracking
+    }
+
 
     // Updates the currently tracked image when *trackNewImages* is true and a new tracked image is found.
     // In that case the model corresponding to the updated image is added to the scene.
@@ -129,11 +135,19 @@ class MainActivity : AppCompatActivity() {
             renderable.isShadowCaster = true
             renderable.isShadowReceiver = false
 
-            val anchor = trackedImage.createAnchor(trackedImage.centerPose)
-            modelAnchorNode = AnchorNode(anchor).apply {
-                setParent(arFragment.arSceneView.scene)
-            }
+            if (dynamicTrackingEnabled) {
+                val anchor = trackedImage.createAnchor(trackedImage.centerPose)
+                modelAnchorNode = AnchorNode(anchor).apply {
+                    setParent(arFragment.arSceneView.scene)
+                }
 
+            } else {
+               modelAnchorNode = AnchorNode().apply {
+                   val pos = trackedImage.centerPose
+                   this.worldPosition = Vector3(pos.tx(), pos.ty(), pos.tz())
+                   setParent(arFragment.arSceneView.scene)
+               }
+            }
             val node = TransformableNode(arFragment.transformationSystem)
             modelNode = node
             node.setParent(modelAnchorNode)
