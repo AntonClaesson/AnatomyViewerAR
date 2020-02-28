@@ -6,6 +6,7 @@ import com.google.ar.sceneform.ux.ArFragment
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
@@ -45,27 +46,26 @@ class MainActivity : AppCompatActivity() {
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as ArFragment
 
         // Setup listeners
-        arFragment.arSceneView.setOnTouchListener(::onScreenTouch)
         arFragment.arSceneView.scene.addOnUpdateListener(::onUpdate)
-    }
 
+        //TODO: Data binding
+        val resetBtn = findViewById<Button>(R.id.reset_button)
+        resetBtn.setOnClickListener {
+            trackNewImages = true
+            currentlyTrackedImage = null
 
-    private fun onScreenTouch(view: View, motionEvent: MotionEvent): Boolean {
-        trackNewImages = true
-        currentlyTrackedImage = null
-
-        if (modelAnchorNode != null) {
-            val anchorNode = modelAnchorNode!!
-            if (anchorNode.anchor != null) {
-                anchorNode.anchor!!.detach()
+            if (modelAnchorNode != null) {
+                val anchorNode = modelAnchorNode!!
+                if (anchorNode.anchor != null) {
+                    anchorNode.anchor!!.detach()
+                }
+                arFragment.arSceneView.scene.removeChild(modelAnchorNode)
             }
-            arFragment.arSceneView.scene.removeChild(modelAnchorNode)
-        }
 
-
-        Toast.makeText(arFragment.requireContext(), "Scanning for new image", Toast.LENGTH_SHORT).show()
-        return true
+            Toast.makeText(arFragment.requireContext(), "Scanning for new image", Toast.LENGTH_SHORT).show() }
     }
+
+
 
 
     /// Called once per frame right before the scene is updated.
@@ -149,6 +149,12 @@ class MainActivity : AppCompatActivity() {
                }
             }
             val node = TransformableNode(arFragment.transformationSystem)
+
+            node.rotationController.isEnabled = true
+            node.scaleController.isEnabled = true
+
+
+
             modelNode = node
             node.setParent(modelAnchorNode)
             node.renderable = modelRenderable
