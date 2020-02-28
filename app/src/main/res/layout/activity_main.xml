@@ -13,4 +13,19 @@ tools:context=".MainActivity">
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:background="@color/colorPrimary"
+            />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 </FrameLayout>
