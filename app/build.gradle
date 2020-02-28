@@ -55,3 +55,8 @@ sceneform.asset('sampledata/lion.fbx',
         'default',
         'sampledata/lion.sfa',
         'src/main/res/raw/lion')
+
+sceneform.asset('sampledata/bone.fbx',
+        'default',
+        'sampledata/bone.sfa',
+        'src/main/res/raw/bone')

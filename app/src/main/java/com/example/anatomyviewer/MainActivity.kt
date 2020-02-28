@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     private fun createModelForTrackedImage(image: AugmentedImage?) {
         val trackedImage = image ?: return
 
-        val model = if (trackedImage.name == "earth.jpg") R.raw.lion else R.raw.dino
+        val model = if (trackedImage.name == "earth.jpg") R.raw.bone else R.raw.dino
 
         // Load model from file
         ModelRenderable.builder().setSource(arFragment.requireContext(), model).build().thenAccept { renderable ->
