@@ -16,8 +16,46 @@ import java.lang.IllegalArgumentException
 
 class ARViewModel: ViewModel() {
 
+    var shouldUpdate3DModel: Boolean = false
+
+    // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
+    val dynamicTrackingEnabled: Boolean = true
+
     // Enables or disables search of new trackable images
     var trackNewImages: Boolean = true
+
+    // The image currently being tracked by ARCore
+    var currentlyTrackedImage: AugmentedImage? = null
+
+    fun updateTrackedImageForFrame(frame: Frame) {
+        // Check if tracking of new images is requested, otherwise return
+        if (!trackNewImages) return
+
+        val trackedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
+
+        // Images which are tracked by most recent location
+        //val nonFullTrackingImages = trackedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }
+
+        // Images which are being tracked by their actual location (in frame)
+        val fullTrackingImages = trackedAugmentedImages.filter { it.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING }
+
+        // Return if no images are currently fully visible
+        if (fullTrackingImages.isEmpty()) return
+
+        // Make first tracked image active
+        fullTrackingImages.firstOrNull()?.let { augmentedImage ->
+            if (currentlyTrackedImage == augmentedImage) return
+
+            // Disable tracking of new images until user input requests otherwise
+            trackNewImages = false
+
+            // Update tracked image
+            currentlyTrackedImage = augmentedImage
+
+            shouldUpdate3DModel = true
+        }
+
+    }
 
     fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
 

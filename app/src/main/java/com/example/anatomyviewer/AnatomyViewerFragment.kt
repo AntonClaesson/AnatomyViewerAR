@@ -21,26 +21,14 @@ import java.lang.IllegalArgumentException
 
 open class AnatomyViewerFragment : ArFragment() {
 
+    // ViewModel containing data and business logic
     private lateinit var viewModel: ARViewModel
 
-    // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
-    val dynamicTrackingEnabled: Boolean = true
-    
-    // The active 3D model
-    private lateinit var modelRenderable: ModelRenderable
-
-    // The node for the tracked AugmentedImage anchor
+    // The node attached to the tracked AugmentedImage anchor
     private var modelAnchorNode: AnchorNode? = null
 
     // The node to which the model is attached
     private var modelNode: TransformableNode? = null
-
-    // The image currently being tracked by ARCore
-    var currentlyTrackedImage: AugmentedImage? = null
-        set(value) {
-            field = value
-            createModelForTrackedImage(value)
-        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  super.onCreateView(inflater, container, savedInstanceState)
@@ -74,7 +62,8 @@ open class AnatomyViewerFragment : ArFragment() {
     }
 
     fun resetSession(){
-        currentlyTrackedImage = null
+        viewModel.currentlyTrackedImage = null
+        viewModel.trackNewImages = true
 
         if (modelAnchorNode != null) {
             val anchorNode = modelAnchorNode!!
@@ -89,12 +78,16 @@ open class AnatomyViewerFragment : ArFragment() {
 
     override fun onUpdate(frameTime: FrameTime?) {
         super.onUpdate(frameTime)
-
         val frame = this.arSceneView.arFrame ?: return
         // If tracking is ok, we proceed
         if (trackingStateOK(frame)) {
-            val updatedTrackedImage = updateTrackedImageForFrame(frame) ?: return
-            Toast.makeText(this.requireContext(), "Changed to tracking: "+ updatedTrackedImage.name, Toast.LENGTH_LONG).show()
+            viewModel.updateTrackedImageForFrame(frame)
+            if (viewModel.shouldUpdate3DModel) {
+                viewModel.shouldUpdate3DModel = false
+                createModelForTrackedImage()
+                Toast.makeText(this.requireContext(), "Changed to tracking: "+ viewModel.currentlyTrackedImage!!.name, Toast.LENGTH_LONG).show()
+                Log.i(TAG, "Tracking "+viewModel.currentlyTrackedImage!!.name)
+            }
         } else {
             handleBadTracking()
         }
@@ -111,51 +104,18 @@ open class AnatomyViewerFragment : ArFragment() {
     }
 
 
-    // Updates the currently tracked image when *trackNewImages* is true and a new tracked image is found.
-    // In that case the model corresponding to the updated image is added to the scene.
-    // Returns a reference to the updated image, or null if there is no update.
-    // This reference is referencing the same instance as the variable *currentlyTrackedImage*
-    private fun updateTrackedImageForFrame(frame: Frame): AugmentedImage? {
-        val updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
-
-        // Images which are tracked by most recent location
-        //val nonFullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }
-
-        // Images which are being tracked by their actual location (in frame)
-        val fullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING }
-
-        // Return if no images are currently fully visible
-        if (fullTrackingImages.isEmpty()) return null
-
-        // Make first tracked image active if preconditions are met
-        fullTrackingImages.firstOrNull()?.let { augmentedImage ->
-            if (currentlyTrackedImage == augmentedImage || !viewModel.trackNewImages) return null
-
-            // Sets the currently tracked image for which the 3D model will be rendered
-            currentlyTrackedImage = augmentedImage
-
-            // Disable tracking of new images until user input requests differently
-            viewModel.trackNewImages = false
-
-            return augmentedImage
-        }
-
-        return null
-    }
-
     // Adds the 3D model corresponding to the tracked image to the scene.
-    private fun createModelForTrackedImage(image: AugmentedImage?) {
-        val trackedImage = image ?: return
+    private fun createModelForTrackedImage() {
+        val trackedImage = viewModel.currentlyTrackedImage ?: return
 
         val model = if (trackedImage.name == "earth.jpg") R.raw.bone else R.raw.dino
 
         // Load model from file
         ModelRenderable.builder().setSource(this.requireContext(), model).build().thenAccept { renderable ->
-            modelRenderable = renderable
             renderable.isShadowCaster = true
             renderable.isShadowReceiver = false
 
-            if (dynamicTrackingEnabled) {
+            if (viewModel.dynamicTrackingEnabled) {
                 val anchor = trackedImage.createAnchor(trackedImage.centerPose)
                 modelAnchorNode = AnchorNode(anchor).apply {
                     setParent(this@AnatomyViewerFragment.arSceneView.scene)
@@ -168,6 +128,7 @@ open class AnatomyViewerFragment : ArFragment() {
                     setParent(this@AnatomyViewerFragment.arSceneView.scene)
                 }
             }
+
             val node = TransformableNode(this.transformationSystem)
 
             node.rotationController.isEnabled = true
@@ -175,7 +136,7 @@ open class AnatomyViewerFragment : ArFragment() {
 
             modelNode = node
             node.setParent(modelAnchorNode)
-            node.renderable = modelRenderable
+            node.renderable = renderable
             node.select()
         }
             .exceptionally { throwable ->
