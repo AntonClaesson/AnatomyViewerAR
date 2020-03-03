@@ -14,9 +14,10 @@ import com.google.ar.sceneform.ux.TransformableNode
 import java.io.IOException
 import java.lang.IllegalArgumentException
 
-private val TAG: String = ARViewModel::class.java.simpleName
-
 class ARViewModel: ViewModel() {
+
+    // Enables or disables search of new trackable images
+    var trackNewImages: Boolean = true
 
     fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
 
@@ -46,6 +47,8 @@ class ARViewModel: ViewModel() {
     }
 
     companion object {
+
+        private val TAG: String = ARViewModel::class.java.simpleName
 
         private val IMAGE_1_NAME: String = "building.jpg"
         private val IMAGE_2_NAME: String = "earth.jpg"

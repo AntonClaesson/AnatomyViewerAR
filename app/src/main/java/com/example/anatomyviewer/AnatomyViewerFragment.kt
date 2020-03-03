@@ -19,20 +19,20 @@ import com.google.ar.sceneform.ux.TransformableNode
 import java.io.IOException
 import java.lang.IllegalArgumentException
 
-private val TAG: String = AnatomyViewerFragment::class.java.simpleName
-
 open class AnatomyViewerFragment : ArFragment() {
 
     private lateinit var viewModel: ARViewModel
 
     // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
     val dynamicTrackingEnabled: Boolean = true
-
-    // Enables or disables search of new trackable images
-    var trackNewImages: Boolean = true
-
+    
+    // The active 3D model
     private lateinit var modelRenderable: ModelRenderable
+
+    // The node for the tracked AugmentedImage anchor
     private var modelAnchorNode: AnchorNode? = null
+
+    // The node to which the model is attached
     private var modelNode: TransformableNode? = null
 
     // The image currently being tracked by ARCore
@@ -129,13 +129,13 @@ open class AnatomyViewerFragment : ArFragment() {
 
         // Make first tracked image active if preconditions are met
         fullTrackingImages.firstOrNull()?.let { augmentedImage ->
-            if (currentlyTrackedImage == augmentedImage || !trackNewImages) return null
+            if (currentlyTrackedImage == augmentedImage || !viewModel.trackNewImages) return null
 
             // Sets the currently tracked image for which the 3D model will be rendered
             currentlyTrackedImage = augmentedImage
 
             // Disable tracking of new images until user input requests differently
-            trackNewImages = false
+            viewModel.trackNewImages = false
 
             return augmentedImage
         }
@@ -184,5 +184,8 @@ open class AnatomyViewerFragment : ArFragment() {
             }
     }
 
+    companion object {
+        private val TAG: String = AnatomyViewerFragment::class.java.simpleName
+    }
 
 }
