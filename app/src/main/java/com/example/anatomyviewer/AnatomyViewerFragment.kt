@@ -133,6 +133,7 @@ open class AnatomyViewerFragment : ArFragment() {
 
             node.rotationController.isEnabled = true
             node.scaleController.isEnabled = true
+            node.translationController.isEnabled = false
 
             modelNode = node
             node.setParent(modelAnchorNode)
