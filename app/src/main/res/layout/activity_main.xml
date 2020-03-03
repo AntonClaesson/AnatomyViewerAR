@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".MainActivity">
 
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-<fragment
-    android:id="@+id/ux_fragment"
-    android:name="com.example.anatomyviewer.AnatomyViewerFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    <data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/reset_button"
+        <fragment
+            android:id="@+id/ux_fragment"
+            android:name="com.example.anatomyviewer.AnatomyViewerFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reset"
-            android:background="@color/colorPrimary"
-            />
+            android:layout_height="match_parent" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/reset_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="Reset" />
 
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-</FrameLayout>
+    </FrameLayout>
+
+</layout>

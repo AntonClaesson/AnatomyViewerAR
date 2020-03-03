@@ -11,11 +11,8 @@ import android.widget.Toast
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.google.ar.core.Session
-import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import java.io.IOException
-import java.io.InputStream
 import java.lang.IllegalArgumentException
 
 open class AnatomyViewerFragment : ArFragment() {

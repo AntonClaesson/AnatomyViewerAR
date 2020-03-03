@@ -8,6 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import com.example.anatomyviewer.databinding.ActivityMainBinding
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.AnchorNode
@@ -19,6 +21,8 @@ import com.google.ar.sceneform.ux.TransformableNode
 private val TAG: String = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     lateinit var arFragment: ArFragment
 
@@ -41,16 +45,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        // TODO: Can this be converted with data binding?
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as ArFragment
-
-        // Setup listeners
         arFragment.arSceneView.scene.addOnUpdateListener(::onUpdate)
 
-        //TODO: Data binding
-        val resetBtn = findViewById<Button>(R.id.reset_button)
-        resetBtn.setOnClickListener {
+        binding.resetButton.setOnClickListener {
             trackNewImages = true
             currentlyTrackedImage = null
 
@@ -152,8 +153,6 @@ class MainActivity : AppCompatActivity() {
 
             node.rotationController.isEnabled = true
             node.scaleController.isEnabled = true
-
-
 
             modelNode = node
             node.setParent(modelAnchorNode)
