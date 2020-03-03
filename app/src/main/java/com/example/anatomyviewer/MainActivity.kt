@@ -35,7 +35,4 @@ class MainActivity : AppCompatActivity() {
             arFragment.resetSession()
         }
     }
-
-
-
 }

@@ -1,7 +1,5 @@
 package com.example.anatomyviewer
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,8 +14,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
-import java.io.IOException
-import java.lang.IllegalArgumentException
 
 open class AnatomyViewerFragment : ArFragment() {
 
@@ -54,7 +50,7 @@ open class AnatomyViewerFragment : ArFragment() {
         config.focusMode = Config.FocusMode.AUTO
 
         // Setup AugmentedImageDatabase
-        if (!viewModel.setupAugmentedImageDatabase(requireContext(),config, session)) {
+        if (!viewModel.setupAugmentedImageDatabase(requireContext(), config, session)) {
             Toast.makeText(requireContext(), "Could not setup image database", Toast.LENGTH_LONG).show()
         }
 

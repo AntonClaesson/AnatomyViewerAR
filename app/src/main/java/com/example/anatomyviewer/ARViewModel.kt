@@ -4,13 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.google.ar.core.*
-import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.ux.TransformableNode
 import java.io.IOException
 import java.lang.IllegalArgumentException
 
