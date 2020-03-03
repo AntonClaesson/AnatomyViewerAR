@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.ar.core.*
 import java.io.IOException
@@ -11,16 +12,19 @@ import java.lang.IllegalArgumentException
 
 class ARViewModel: ViewModel() {
 
-    var shouldUpdate3DModel: Boolean = false
+    // Observers
+    val trackedImageUpdated = MutableLiveData<Event<AugmentedImage?>>()
 
-    // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
-    val dynamicTrackingEnabled: Boolean = true
+    // Settings
+    val dynamicTrackingEnabled: Boolean = true // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
 
-    // Enables or disables search of new trackable images
+    // Instance variables
     var trackNewImages: Boolean = true
-
-    // The image currently being tracked by ARCore
     var currentlyTrackedImage: AugmentedImage? = null
+        set(value) {
+            field = value
+            trackedImageUpdated.value = Event(value)
+        }
 
     fun reset(){
         currentlyTrackedImage = null
@@ -51,8 +55,6 @@ class ARViewModel: ViewModel() {
 
             // Update tracked image
             currentlyTrackedImage = augmentedImage
-
-            shouldUpdate3DModel = true
         }
     }
 
@@ -92,3 +94,4 @@ class ARViewModel: ViewModel() {
 
     }
 }
+

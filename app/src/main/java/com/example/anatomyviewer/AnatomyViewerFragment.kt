@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
@@ -38,6 +39,14 @@ open class AnatomyViewerFragment : ArFragment() {
 
         //Hides the plane renderering
         this.arSceneView.planeRenderer.isVisible = true
+
+        //Setup observers
+        viewModel.trackedImageUpdated.observe(viewLifecycleOwner, Observer { event ->
+            event?.getContentIfNotHandledOrReturnNull()?.let { image ->
+                Toast.makeText( this.requireContext(), "Changed to tracking: " + image.name, Toast.LENGTH_LONG).show()
+                createModelForTrackedImage()
+            }
+        })
 
         return view
     }
@@ -77,16 +86,12 @@ open class AnatomyViewerFragment : ArFragment() {
         // If tracking is ok, we proceed
         if (trackingStateOK(frame)) {
             viewModel.updateTrackedImageForFrame(frame)
-            if (viewModel.shouldUpdate3DModel) {
-                viewModel.shouldUpdate3DModel = false
-                createModelForTrackedImage()
-                Toast.makeText(this.requireContext(), "Changed to tracking: "+ viewModel.currentlyTrackedImage!!.name, Toast.LENGTH_LONG).show()
-                Log.i(TAG, "Tracking "+viewModel.currentlyTrackedImage!!.name)
-            }
         } else {
             handleBadTracking()
         }
     }
+
+
 
     // Checks whether tracking is active or not.
     private fun trackingStateOK(frame: Frame): Boolean {
