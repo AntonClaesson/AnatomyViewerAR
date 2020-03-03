@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 
@@ -21,11 +23,10 @@ open class AnatomyViewerFragment : ArFragment() {
     // ViewModel containing data and business logic
     private lateinit var viewModel: ARViewModel
 
-    // The node attached to the tracked AugmentedImage anchor
-    private var modelAnchorNode: AnchorNode? = null
+    private var modelAnchorNode: AnchorNode? = null     // A node attached to the tracked AugmentedImage anchor
+    private var modelNode: TransformableNode? = null    // A node to which the model is attached
+    private var viewNode: Node? = null
 
-    // The node to which the model is attached
-    private var modelNode: TransformableNode? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  super.onCreateView(inflater, container, savedInstanceState)
@@ -92,7 +93,6 @@ open class AnatomyViewerFragment : ArFragment() {
     }
 
 
-
     // Checks whether tracking is active or not.
     private fun trackingStateOK(frame: Frame): Boolean {
         if (frame.camera.trackingState == TrackingState.TRACKING) return true
@@ -115,22 +115,16 @@ open class AnatomyViewerFragment : ArFragment() {
             renderable.isShadowCaster = true
             renderable.isShadowReceiver = false
 
-            if (viewModel.dynamicTrackingEnabled) {
-                val anchor = trackedImage.createAnchor(trackedImage.centerPose)
-                modelAnchorNode = AnchorNode(anchor).apply {
-                    setParent(this@AnatomyViewerFragment.arSceneView.scene)
-                }
-
-            } else {
-                modelAnchorNode = AnchorNode().apply {
-                    val pos = trackedImage.centerPose
-                    this.worldPosition = Vector3(pos.tx(), pos.ty(), pos.tz())
-                    setParent(this@AnatomyViewerFragment.arSceneView.scene)
-                }
+            val anchor = trackedImage.createAnchor(trackedImage.centerPose)
+            modelAnchorNode = AnchorNode(anchor).apply {
+                setParent(this@AnatomyViewerFragment.arSceneView.scene)
             }
 
-            val node = TransformableNode(this.transformationSystem)
+            // Begin loading view renderable
+            createViewRenderableForAnchorNode(modelAnchorNode!!, trackedImage)
 
+            // Finish loading of model
+            val node = TransformableNode(this.transformationSystem)
             node.rotationController.isEnabled = true
             node.scaleController.isEnabled = true
             node.translationController.isEnabled = false
@@ -144,6 +138,20 @@ open class AnatomyViewerFragment : ArFragment() {
                 Log.e(TAG, "Could not create ModelRenderable", throwable)
                 return@exceptionally null
             }
+    }
+
+    private fun createViewRenderableForAnchorNode(anchorNode: AnchorNode, trackedImage: AugmentedImage){
+
+        ViewRenderable.builder().setView(requireContext(), R.layout.info_card).build().thenAccept { viewRenderable ->
+
+            viewRenderable.isShadowCaster = false
+            viewRenderable.isShadowReceiver = false
+
+            val viewNode = Node()
+            viewNode.setParent(anchorNode)
+            viewNode.localPosition = Vector3(0f,0f,0f)
+            viewNode.renderable = viewRenderable
+        }
     }
 
     companion object {

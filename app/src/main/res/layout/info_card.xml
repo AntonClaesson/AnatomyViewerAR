@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:id="@+id/planetInfoCard"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="2sp"
+            android:autoSizeMaxTextSize="8sp"
+            android:autoSizeStepGranularity="1sp"
+            android:text="Modelname"
+            android:textAlignment="center"
+            android:gravity="top"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="3sp"
+            android:autoSizeMaxTextSize="10sp"
+            android:autoSizeStepGranularity="1sp"
+            android:text="asdniuq qiedbwqiwund iuqwduq asjdn ashdba asdu ausduad"
+            android:padding="1dp"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+</layout>
