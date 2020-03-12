@@ -12,11 +12,11 @@ import java.lang.IllegalArgumentException
 
 class ARViewModel: ViewModel() {
 
+    val IMAGE_1_NAME: String = "building.jpg"
+    val IMAGE_2_NAME: String = "earth.jpg"
+
     // Observers
     val trackedImageUpdated = MutableLiveData<Event<AugmentedImage?>>()
-
-    // Settings
-    val dynamicTrackingEnabled: Boolean = true // Enables tracking of dynamic images. Should be set to true if the tracked image is able to move.
 
     // Instance variables
     var trackNewImages: Boolean = true
@@ -26,10 +26,31 @@ class ARViewModel: ViewModel() {
             trackedImageUpdated.value = Event(value)
         }
 
+
     fun reset(){
         currentlyTrackedImage = null
         trackNewImages = true
     }
+
+
+    fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
+
+        fun loadAugmentedImageBitmap(imageName: String): Bitmap = context.assets.open(imageName).use { return BitmapFactory.decodeStream(it) }
+
+        try {
+            config.augmentedImageDatabase = AugmentedImageDatabase(session).also { database ->
+                database.addImage(IMAGE_1_NAME,loadAugmentedImageBitmap(IMAGE_1_NAME))
+                database.addImage(IMAGE_2_NAME,loadAugmentedImageBitmap(IMAGE_2_NAME))
+            }
+            return true
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG,"Could not add bitmap to augmented image database", e)
+        } catch (e: IOException) {
+            Log.e(TAG, "IO exception loading augmented image bitmap", e)
+        }
+        return false
+    }
+
 
     fun updateTrackedImageForFrame(frame: Frame) {
         // Check if tracking of new images is requested, otherwise return
@@ -58,23 +79,6 @@ class ARViewModel: ViewModel() {
         }
     }
 
-    fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
-
-        fun loadAugmentedImageBitmap(imageName: String): Bitmap = context.assets.open(imageName).use { return BitmapFactory.decodeStream(it) }
-
-        try {
-            config.augmentedImageDatabase = AugmentedImageDatabase(session).also { database ->
-                database.addImage(IMAGE_1_NAME,loadAugmentedImageBitmap(IMAGE_1_NAME))
-                database.addImage(IMAGE_2_NAME,loadAugmentedImageBitmap(IMAGE_2_NAME))
-            }
-            return true
-        } catch (e: IllegalArgumentException) {
-            Log.e(TAG,"Could not add bitmap to augmented image database", e)
-        } catch (e: IOException) {
-            Log.e(TAG, "IO exception loading augmented image bitmap", e)
-        }
-        return false
-    }
 
     init {
         Log.i(TAG, "ARViewModel created!")
@@ -86,12 +90,7 @@ class ARViewModel: ViewModel() {
     }
 
     companion object {
-
         private val TAG: String = ARViewModel::class.java.simpleName
-
-        private val IMAGE_1_NAME: String = "building.jpg"
-        private val IMAGE_2_NAME: String = "earth.jpg"
-
     }
 }
 
