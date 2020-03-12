@@ -5,7 +5,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/title"
@@ -16,6 +17,7 @@
             android:autoSizeMaxTextSize="8sp"
             android:autoSizeStepGranularity="1sp"
             android:text="Modelname"
+            android:textColor="@android:color/white"
             android:textAlignment="center"
             android:gravity="top"/>
 
@@ -28,6 +30,7 @@
             android:autoSizeMaxTextSize="10sp"
             android:autoSizeStepGranularity="1sp"
             android:text="asdniuq qiedbwqiwund iuqwduq asjdn ashdba asdu ausduad"
+            android:textColor="@android:color/white"
             android:padding="1dp"
             android:textAlignment="center"/>
 
