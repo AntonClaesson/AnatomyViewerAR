@@ -2,37 +2,37 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
         android:id="@+id/planetInfoCard"
-        android:layout_width="50dp"
+        android:layout_width="80dp"
         android:layout_height="50dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:background="@color/colorPrimary">
+        android:background="@android:color/white">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:layout_height="14dp"
+            android:layout_height="15dp"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="2sp"
             android:autoSizeMaxTextSize="8sp"
             android:autoSizeStepGranularity="1sp"
             android:text="Modelname"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textAlignment="center"
             android:gravity="top"/>
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="3sp"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:autoSizeMaxTextSize="10sp"
+            android:autoSizeMinTextSize="3sp"
             android:autoSizeStepGranularity="1sp"
-            android:text="asdniuq qiedbwqiwund iuqwduq asjdn ashdba asdu ausduad"
-            android:textColor="@android:color/white"
+            android:autoSizeTextType="uniform"
             android:padding="1dp"
-            android:textAlignment="center"/>
+            android:text="asdniuq qiedbwqiwund iuqwduq asjdn ashdba asdu ausduad"
+            android:textAlignment="center"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 

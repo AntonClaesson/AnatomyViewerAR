@@ -12,6 +12,9 @@ import java.lang.IllegalArgumentException
 
 class ARViewModel: ViewModel() {
 
+    val IMAGE_1_NAME: String = "building.jpg"
+    val IMAGE_2_NAME: String = "earth.jpg"
+
     // Observers
     val trackedImageUpdated = MutableLiveData<Event<AugmentedImage?>>()
 
@@ -87,12 +90,7 @@ class ARViewModel: ViewModel() {
     }
 
     companion object {
-
         private val TAG: String = ARViewModel::class.java.simpleName
-
-        private val IMAGE_1_NAME: String = "building.jpg"
-        private val IMAGE_2_NAME: String = "earth.jpg"
-
     }
 }
 
