@@ -29,7 +29,6 @@ open class AnatomyViewerFragment : ArFragment() {
 
     private var modelAnchorNode: AnchorNode? = null     // A node attached to the tracked AugmentedImage anchor
     private var modelNode: TransformableNode? = null    // A node to which the model is attached
-    private var viewNode: Node? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -112,7 +111,12 @@ open class AnatomyViewerFragment : ArFragment() {
     private fun createModelForTrackedImage() {
         val trackedImage = viewModel.currentlyTrackedImage ?: return
 
-        val model = if (trackedImage.name == viewModel.IMAGE_1_NAME ) R.raw.dino else R.raw.bone
+        val id = trackedImage.name
+        var model = R.raw.dino //Default fallback model
+        when(id){
+            viewModel.IMAGE_1_NAME -> {model = R.raw.bone }
+            viewModel.IMAGE_2_NAME -> {model = R.raw.dino}
+        }
 
         // Load model from file
         ModelRenderable.builder().setSource(this.requireContext(), model).build().thenAccept { renderable ->
@@ -131,7 +135,7 @@ open class AnatomyViewerFragment : ArFragment() {
             node.rotationController.isEnabled = true
             node.scaleController.isEnabled = true
             node.translationController.isEnabled = false
-            node.scaleController.maxScale = if (trackedImage.name == viewModel.IMAGE_2_NAME ) node.scaleController.maxScale*1.0f else node.scaleController.maxScale*2.0f
+//            node.scaleController.maxScale =node.scaleController.maxScale*1.0f
 
             modelNode = node
             node.setParent(modelAnchorNode)
@@ -155,8 +159,8 @@ open class AnatomyViewerFragment : ArFragment() {
         var description = "Not available"
 
         when (id) {
-            "building.jpg" -> { title = "Dinosaur"; description = "This is a prehestoric creature"}
-            "earth.jpg" -> { title = "Skeleton"; description = "This is the skeleton of a human torso"}
+            viewModel.IMAGE_1_NAME -> { title = "Skeleton"; description = "This is the skeleton of a human torso"}
+            viewModel.IMAGE_2_NAME -> { title = "Torso"; description = "This is the skeleton, heart and kidneys of a human torso"}
         }
 
         val dpm = 500 //Default 250 dpm
