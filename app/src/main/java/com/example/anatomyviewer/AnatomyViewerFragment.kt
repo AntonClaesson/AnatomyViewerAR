@@ -197,6 +197,10 @@ open class AnatomyViewerFragment : ArFragment() {
             viewNode.localPosition = Vector3(0.2f,0.2f,0f)
             viewNode.renderable = viewRenderable
 
+            viewNode.setOnTapListener { hitTestResult, motionEvent ->
+                Toast.makeText( this.requireContext(), "Tapped info card!", Toast.LENGTH_LONG).show()
+            }
+
             this.viewNode = viewNode
         }
 
