@@ -55,6 +55,7 @@
     file: 'sampledata/bone_with_heart_kidney.fbx',
     name: 'bone_with_heart_kidney',
     recenter: 'root',
+    scale: 2.0,
   },
   version: '0.54:2',
 }

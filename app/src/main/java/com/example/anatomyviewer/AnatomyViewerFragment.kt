@@ -9,7 +9,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.filament.Box
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
@@ -20,7 +19,9 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
-import kotlinx.android.synthetic.main.info_card.*
+import com.google.ar.sceneform.math.Quaternion
+
+
 
 open class AnatomyViewerFragment : ArFragment() {
 
@@ -29,6 +30,8 @@ open class AnatomyViewerFragment : ArFragment() {
 
     private var modelAnchorNode: AnchorNode? = null     // A node attached to the tracked AugmentedImage anchor
     private var modelNode: TransformableNode? = null    // A node to which the model is attached
+    private var viewNode: Node? = null
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,6 +93,7 @@ open class AnatomyViewerFragment : ArFragment() {
         // If tracking is ok, we proceed
         if (trackingStateOK(frame)) {
             viewModel.updateTrackedImageForFrame(frame)
+            updateViewNodeForFrame(frame)
         } else {
             handleBadTracking()
         }
@@ -106,6 +110,14 @@ open class AnatomyViewerFragment : ArFragment() {
         //TODO: Handle bad tracking
     }
 
+    private fun updateViewNodeForFrame(frame: Frame){
+        val viewNode = this.viewNode ?: return
+        val cameraPosition = Vector3(frame.camera.pose.tx(),frame.camera.pose.ty(),frame.camera.pose.tz())
+        val cardPosition = viewNode.getWorldPosition()
+        val direction = Vector3.subtract(cameraPosition, cardPosition)
+        val lookRotation = Quaternion.lookRotation(direction, Vector3.up())
+        viewNode.setWorldRotation(lookRotation)
+    }
 
     // Adds the 3D model corresponding to the tracked image to the scene.
     private fun createModelForTrackedImage() {
@@ -135,7 +147,11 @@ open class AnatomyViewerFragment : ArFragment() {
             node.rotationController.isEnabled = true
             node.scaleController.isEnabled = true
             node.translationController.isEnabled = false
-//            node.scaleController.maxScale =node.scaleController.maxScale*1.0f
+            node.scaleController.maxScale =node.scaleController.maxScale*1.0f
+
+            node.localPosition = Vector3(0f,0.05f,0f)
+
+
 
             modelNode = node
             node.setParent(modelAnchorNode)
@@ -178,8 +194,10 @@ open class AnatomyViewerFragment : ArFragment() {
 
             val viewNode = Node()
             viewNode.setParent(parent)
-            viewNode.localPosition = Vector3(0f,0.2f,0f)
+            viewNode.localPosition = Vector3(0.2f,0.2f,0f)
             viewNode.renderable = viewRenderable
+
+            this.viewNode = viewNode
         }
 
     }

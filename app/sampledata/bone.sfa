@@ -55,6 +55,7 @@
     file: 'sampledata/bone.fbx',
     name: 'bone',
     recenter: 'root',
+    scale: 2.0,
   },
   version: '0.54:2',
 }
