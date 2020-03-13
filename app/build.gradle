@@ -69,3 +69,8 @@ sceneform.asset('sampledata/bone.fbx',
         'default',
         'sampledata/bone.sfa',
         'src/main/res/raw/bone')
+
+sceneform.asset('sampledata/bone_with_heart_kidney.fbx',
+        'default',
+        'sampledata/bone_with_heart_kidney.sfa',
+        'src/main/res/raw/bone_with_heart_kidney')

@@ -115,7 +115,7 @@ open class AnatomyViewerFragment : ArFragment() {
         var model = R.raw.dino //Default fallback model
         when(id){
             viewModel.IMAGE_1_NAME -> {model = R.raw.bone }
-            viewModel.IMAGE_2_NAME -> {model = R.raw.dino}
+            viewModel.IMAGE_2_NAME -> {model = R.raw.bone_with_heart_kidney}
         }
 
         // Load model from file
