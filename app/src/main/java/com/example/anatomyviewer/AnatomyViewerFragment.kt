@@ -13,6 +13,7 @@ import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.DpToMetersViewSizer
 import com.google.ar.sceneform.rendering.ModelRenderable
@@ -30,7 +31,7 @@ open class AnatomyViewerFragment : ArFragment() {
 
     private var modelAnchorNode: AnchorNode? = null     // A node attached to the tracked AugmentedImage anchor
     private var modelNode: TransformableNode? = null    // A node to which the model is attached
-    private var viewNode: Node? = null
+    private var infoCardNode: Node? = null
 
 
 
@@ -93,7 +94,7 @@ open class AnatomyViewerFragment : ArFragment() {
         // If tracking is ok, we proceed
         if (trackingStateOK(frame)) {
             viewModel.updateTrackedImageForFrame(frame)
-            updateViewNodeForFrame(frame)
+            updateinfoCardNodeForFrame(frame)
         } else {
             handleBadTracking()
         }
@@ -110,13 +111,14 @@ open class AnatomyViewerFragment : ArFragment() {
         //TODO: Handle bad tracking
     }
 
-    private fun updateViewNodeForFrame(frame: Frame){
-        val viewNode = this.viewNode ?: return
+    private fun updateinfoCardNodeForFrame(frame: Frame){
+        val infoCardNode = this.infoCardNode ?: return
+
         val cameraPosition = Vector3(frame.camera.pose.tx(),frame.camera.pose.ty(),frame.camera.pose.tz())
-        val cardPosition = viewNode.getWorldPosition()
+        val cardPosition = infoCardNode.worldPosition
         val direction = Vector3.subtract(cameraPosition, cardPosition)
         val lookRotation = Quaternion.lookRotation(direction, Vector3.up())
-        viewNode.setWorldRotation(lookRotation)
+        infoCardNode.worldRotation = lookRotation
     }
 
     // Adds the 3D model corresponding to the tracked image to the scene.
@@ -126,8 +128,8 @@ open class AnatomyViewerFragment : ArFragment() {
         val id = trackedImage.name
         var model = R.raw.dino //Default fallback model
         when(id){
-            viewModel.IMAGE_1_NAME -> {model = R.raw.bone }
-            viewModel.IMAGE_2_NAME -> {model = R.raw.bone_with_heart_kidney}
+            viewModel.IMAGE_3_NAME -> {model = R.raw.bone }
+            viewModel.IMAGE_4_NAME -> {model = R.raw.bone_with_heart_kidney}
         }
 
         // Load model from file
@@ -140,7 +142,6 @@ open class AnatomyViewerFragment : ArFragment() {
                 setParent(this@AnatomyViewerFragment.arSceneView.scene)
             }
 
-            createViewRenderableForNode(modelAnchorNode!!)
 
             // Finish loading of model
             val node = TransformableNode(this.transformationSystem)
@@ -148,9 +149,9 @@ open class AnatomyViewerFragment : ArFragment() {
             node.scaleController.isEnabled = true
             node.translationController.isEnabled = false
             node.scaleController.maxScale =node.scaleController.maxScale*1.0f
+            node.scaleController.minScale = node.scaleController.minScale*0.1f
 
             node.localPosition = Vector3(0f,0.05f,0f)
-
 
 
             modelNode = node
@@ -158,7 +159,7 @@ open class AnatomyViewerFragment : ArFragment() {
             node.renderable = renderable
             node.select()
 
-
+            createViewRenderableForNode(node)
 
         }
             .exceptionally { throwable ->
@@ -175,8 +176,8 @@ open class AnatomyViewerFragment : ArFragment() {
         var description = "Not available"
 
         when (id) {
-            viewModel.IMAGE_1_NAME -> { title = "Skeleton"; description = "This is the skeleton of a human torso"}
-            viewModel.IMAGE_2_NAME -> { title = "Torso"; description = "This is the skeleton, heart and kidneys of a human torso"}
+            viewModel.IMAGE_3_NAME -> { title = "Skeleton"; description = "This is the skeleton of a human torso"}
+            viewModel.IMAGE_4_NAME -> { title = "Torso"; description = "This is the skeleton, heart and kidneys of a human torso"}
         }
 
         val dpm = 500 //Default 250 dpm
@@ -191,20 +192,51 @@ open class AnatomyViewerFragment : ArFragment() {
 
             viewRenderable.isShadowCaster = false
             viewRenderable.isShadowReceiver = false
+            
+            val infoCardNode = Node()
+            infoCardNode.setParent(parent)
+            infoCardNode.renderable = viewRenderable
 
-            val viewNode = Node()
-            viewNode.setParent(parent)
-            viewNode.localPosition = Vector3(0.2f,0.2f,0f)
-            viewNode.renderable = viewRenderable
+            val modelBoundingBox = parent.collisionShape as Box
+            val infoCardBoundingBox = infoCardNode.collisionShape as Box
 
-            viewNode.setOnTapListener { hitTestResult, motionEvent ->
-                Toast.makeText( this.requireContext(), "Tapped info card!", Toast.LENGTH_LONG).show()
+            infoCardNode.localPosition = Vector3(
+                modelBoundingBox.extents.x/2 + infoCardBoundingBox.extents.x/2 + 0.05f,
+                0.2f,
+                0f)
+
+            infoCardNode.setOnTapListener { hitTestResult, motionEvent ->
+                Toast.makeText( this.requireContext(), "Tapped infoCard card!", Toast.LENGTH_LONG).show()
             }
 
-            this.viewNode = viewNode
+            this.infoCardNode = infoCardNode
         }
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     companion object {
         private val TAG: String = AnatomyViewerFragment::class.java.simpleName

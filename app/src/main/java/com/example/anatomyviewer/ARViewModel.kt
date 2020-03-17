@@ -14,6 +14,9 @@ class ARViewModel: ViewModel() {
 
     val IMAGE_1_NAME: String = "building.jpg"
     val IMAGE_2_NAME: String = "earth.jpg"
+    val IMAGE_3_NAME: String = "queen_of_diamonds.jpg"
+    val IMAGE_4_NAME: String = "ten_of_spades.jpg"
+
 
     // Observers
     val trackedImageUpdated = MutableLiveData<Event<AugmentedImage?>>()
@@ -41,6 +44,9 @@ class ARViewModel: ViewModel() {
             config.augmentedImageDatabase = AugmentedImageDatabase(session).also { database ->
                 database.addImage(IMAGE_1_NAME,loadAugmentedImageBitmap(IMAGE_1_NAME))
                 database.addImage(IMAGE_2_NAME,loadAugmentedImageBitmap(IMAGE_2_NAME))
+                database.addImage(IMAGE_3_NAME,loadAugmentedImageBitmap(IMAGE_3_NAME))
+                database.addImage(IMAGE_4_NAME,loadAugmentedImageBitmap(IMAGE_4_NAME))
+
             }
             return true
         } catch (e: IllegalArgumentException) {
