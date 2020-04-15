@@ -61,18 +61,21 @@
                 android:id="@+id/radio_button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.quizData.clickedOption1()}"
                 android:text="@{viewModel.quizData.opt1Text}" />
 
             <RadioButton
                 android:id="@+id/radio_button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.quizData.clickedOption2()}"
                 android:text="@{viewModel.quizData.opt2Text}" />
 
             <RadioButton
                 android:id="@+id/radio_button3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.quizData.clickedOption3()}"
                 android:text="@{viewModel.quizData.opt3Text}" />
 
         </RadioGroup>
@@ -83,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/radio_group"
             android:layout_marginTop="16dp"
+            android:onClick="@{() -> viewModel.quizData.clickedConfirmed()}"
             android:text="Confirm" />
 
     </RelativeLayout>

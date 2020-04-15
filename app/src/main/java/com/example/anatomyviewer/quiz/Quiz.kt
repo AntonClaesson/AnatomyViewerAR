@@ -16,13 +16,18 @@ class Quiz(val questions: MutableList<Question>) {
         return questions[currentQuestionIndex]
     }
 
-    fun nextQuestion(): Question? {
+    fun getCurrentQuestionIndex(): Int {
+        if (quizFinished) {
+            return -1
+        }
+        return currentQuestionIndex
+    }
+
+    fun nextQuestion() {
         if (currentQuestionIndex+1 == questions.count()) {
             quizFinished = true
-            return null
         }
         currentQuestionIndex = currentQuestionIndex + 1
-        return questions[currentQuestionIndex]
     }
 
     fun guessOption(guess: Int) {

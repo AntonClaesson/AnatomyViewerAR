@@ -1,9 +1,12 @@
 package com.example.anatomyviewer.quiz
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 class QuizData {
+
+    private val TAG = QuizData::class.java.toString()
 
     enum class QuizType {
         MODEL1, MODEL2, MODEL3, MODEL4
@@ -42,20 +45,51 @@ class QuizData {
         }
 
         activeQuiz?.let {
-            _scoreLabelTxt.value = "Score: 0"
-            _questionNumbText.value = "Question: 1/${it.questions.count()}"
-            _timeText.value = "00:00"
+           updateQuestionLabelsForQuiz(it)
+        }
+    }
 
-            _questionText.value = it.getCurrentQuestion()?.questionText
-            _opt1Text.value = it.getCurrentQuestion()?.opt1Text
-            _opt2Text.value = it.getCurrentQuestion()?.opt2Text
-            _opt3Text.value = it.getCurrentQuestion()?.opt3Text
+    fun clickedOption1() {
+        Log.d(TAG,"Clicked option 1")
+    }
+
+    fun clickedOption2() {
+        Log.d(TAG,"Clicked option 2")
+    }
+
+    fun clickedOption3() {
+        Log.d(TAG,"Clicked option 3")
+    }
+
+    fun clickedConfirmed(){
+        activeQuiz?.let {
+            //Update the question
+            it.nextQuestion()
+            updateQuestionLabelsForQuiz(it)
+        }
+
+    }
+
+    private fun updateQuestionLabelsForQuiz(it: Quiz){
+        updateScoreLabel()
+        _questionNumbText.value = "Question: ${it.getCurrentQuestionIndex()+1}/${it.questions.count()}"
+        _timeText.value = "00:00"
+
+        _questionText.value = it.getCurrentQuestion()?.questionText
+        _opt1Text.value = it.getCurrentQuestion()?.opt1Text
+        _opt2Text.value = it.getCurrentQuestion()?.opt2Text
+        _opt3Text.value = it.getCurrentQuestion()?.opt3Text
+    }
+
+    private fun updateScoreLabel(){
+        activeQuiz?.let {
+            _scoreLabelTxt.value = "Score: ${it.getScore()}"
         }
     }
 
     private fun createQuiz1(): Quiz {
         val q1 = Question(
-            questionText = "Question 1",
+            questionText = "What is the kneekap?",
             opt1Text = "opt1",
             opt2Text = "opt2",
             opt3Text = "opt3",
@@ -63,10 +97,10 @@ class QuizData {
         )
 
         val q2 = Question(
-            questionText = "Question 2",
-            opt1Text = "opt1",
-            opt2Text = "opt2",
-            opt3Text = "opt3",
+            questionText = "Where is the elbow found?",
+            opt1Text = "1",
+            opt2Text = "2",
+            opt3Text = "3",
             correctOption = 2
         )
 
