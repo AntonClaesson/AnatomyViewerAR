@@ -51,6 +51,7 @@ class ARViewModel(): ViewModel() {
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
     private lateinit var context: Context
+    private lateinit var lifecycleOwner: LifecycleOwner
     private lateinit var transformationSystem: TransformationSystem
 
     fun setup(arSceneView: ArSceneView, context: Context, transformationSystem: TransformationSystem, lifecycleOwner: LifecycleOwner){
@@ -186,12 +187,17 @@ class ARViewModel(): ViewModel() {
         val quizNode = Node()
         quizNode.setParent(arSceneView?.scene)
 
-        val dpm = 500 //Default 250 dpm
-        ViewRenderable.builder().setView(context, R.layout.quiz_card).build()
+        val dpm = 250 //Default 250 dpm
+        ViewRenderable.builder().setView(context, R.layout.view_quiz_card).build()
             .thenAccept { viewRenderable ->
                 viewRenderable.setSizer { DpToMetersViewSizer(dpm).getSize(viewRenderable.view) }
                 viewRenderable.isShadowCaster = false
                 viewRenderable.isShadowReceiver = false
+
+
+                val quizCardView = viewRenderable.view as? QuizCardView
+                quizCardView?.setViewModel(this, lifecycleOwner)
+
                 quizNode.renderable = viewRenderable
                 quizCardNode = quizNode
             }
