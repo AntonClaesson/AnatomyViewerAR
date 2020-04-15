@@ -1,10 +1,10 @@
-package com.example.anatomyviewer
+package com.example.anatomyviewer.quiz
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.lifecycle.LifecycleOwner
+import com.example.anatomyviewer.ARViewModel
 import com.example.anatomyviewer.databinding.ViewQuizCardBinding
 
 class QuizCardView(context: Context): RelativeLayout(context) {
@@ -19,7 +19,6 @@ class QuizCardView(context: Context): RelativeLayout(context) {
     }
 
     fun setViewModel(arvm: ARViewModel, lifecycleOwner: LifecycleOwner){
-        Log.d(TAG, "YESSS WORKS")
         binding.viewModel = arvm
         binding.lifecycleOwner = lifecycleOwner
     }

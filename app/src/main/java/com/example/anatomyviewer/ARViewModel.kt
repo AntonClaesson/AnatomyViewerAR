@@ -10,6 +10,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.example.anatomyviewer.quiz.QuizCardView
+import com.example.anatomyviewer.quiz.QuizData
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.ArSceneView
@@ -24,7 +26,6 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import java.io.IOException
 import java.lang.IllegalArgumentException
-import java.util.*
 
 class ARViewModel(): ViewModel() {
 
@@ -34,7 +35,6 @@ class ARViewModel(): ViewModel() {
     val IMAGE_2_NAME: String = "earth.jpg"
     val IMAGE_3_NAME: String = "queen_of_diamonds.jpg"
     val IMAGE_4_NAME: String = "ten_of_spades.jpg"
-
 
     // Observers
     val trackedImageUpdated = MutableLiveData<Event<AugmentedImage?>>()
@@ -51,6 +51,8 @@ class ARViewModel(): ViewModel() {
     private var modelNode: TransformableNode? = null    // A node to which the model is attached
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
+    var quizData: QuizData? = null
+
     private lateinit var context: Context
     private lateinit var lifecycleOwner: LifecycleOwner
     private lateinit var transformationSystem: TransformationSystem
@@ -59,13 +61,17 @@ class ARViewModel(): ViewModel() {
         this.arSceneView = arSceneView
         this.context = context
         this.transformationSystem = transformationSystem
+        this.lifecycleOwner = lifecycleOwner
+
+        // Initialize quizdata
+        quizData = QuizData()
 
         //Setup observers
         trackedImageUpdated.observe(lifecycleOwner, Observer { event ->
             event?.getContentIfNotHandledOrReturnNull()?.let { image ->
                 Toast.makeText( context, "Changed to tracking: " + image.name, Toast.LENGTH_LONG).show()
                 createModelForTrackedImage()
-                createQuizRenderable()
+                createQuiz()
             }
         })
     }
@@ -178,12 +184,16 @@ class ARViewModel(): ViewModel() {
             }
     }
 
-    private fun createQuizRenderable() {
+    private fun createQuiz() {
         val id = currentlyTrackedImage?.name ?: return
-        var currentQuiz=1
         when (id) {
-            IMAGE_3_NAME -> {currentQuiz=3}
-            IMAGE_4_NAME -> {currentQuiz=4}
+            IMAGE_1_NAME -> { QuizData.QuizType.MODEL1 }
+            IMAGE_2_NAME -> { QuizData.QuizType.MODEL2 }
+            IMAGE_3_NAME -> { QuizData.QuizType.MODEL3 }
+            IMAGE_4_NAME -> { QuizData.QuizType.MODEL4 }
+            else -> { null }
+        }?.let {
+            quizData?.makeNewQuiz(it)
         }
 
         val quizNode = Node()
@@ -191,16 +201,16 @@ class ARViewModel(): ViewModel() {
         quizNode.localPosition = Vector3(0f,-1f,-2f)
        // quizNode.worldScale = Vector3(0.1f, 0.1f, 0.1f)
 
+        val quizCardView = QuizCardView(context)
+        quizCardView.setViewModel(this, lifecycleOwner)
 
         val dpm = 250 //Default 250 dpm
-        ViewRenderable.builder().setView(context, R.layout.view_quiz_card).build()
+        ViewRenderable.builder().setView(context, quizCardView).build()
             .thenAccept { viewRenderable ->
                 viewRenderable.setSizer { DpToMetersViewSizer(dpm).getSize(viewRenderable.view) }
+
                 viewRenderable.isShadowCaster = false
                 viewRenderable.isShadowReceiver = false
-
-                val quizCardView = viewRenderable.view as? QuizCardView
-                quizCardView?.setViewModel(this, lifecycleOwner)
 
                 quizNode.renderable = viewRenderable
                 quizCardNode = quizNode
