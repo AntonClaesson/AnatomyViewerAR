@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/planetInfoCard"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
         android:gravity="center"
-        android:orientation="vertical"
-        android:background="@android:color/white">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="2sp"
-            android:autoSizeMaxTextSize="8sp"
-            android:autoSizeStepGranularity="1sp"
             android:text="Modelname"
-            android:textColor="@android:color/black"
             android:textAlignment="center"
-            android:gravity="top"/>
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/description"
@@ -32,8 +32,11 @@
             android:padding="1dp"
             android:text="asdniuq qiedbwqiwund iuqwduq asjdn ashdba asdu ausduad"
             android:textAlignment="center"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

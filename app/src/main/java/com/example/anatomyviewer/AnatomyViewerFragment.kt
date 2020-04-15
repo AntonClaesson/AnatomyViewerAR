@@ -34,7 +34,6 @@ open class AnatomyViewerFragment : ArFragment() {
     private var infoCardNode: Node? = null
 
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  super.onCreateView(inflater, container, savedInstanceState)
 
