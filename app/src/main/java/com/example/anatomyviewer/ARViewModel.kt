@@ -24,6 +24,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import java.io.IOException
 import java.lang.IllegalArgumentException
+import java.util.*
 
 class ARViewModel(): ViewModel() {
 
@@ -126,6 +127,7 @@ class ARViewModel(): ViewModel() {
         val cameraPosition = Vector3(frame.camera.pose.tx(),frame.camera.pose.ty(),frame.camera.pose.tz())
         val cardPosition = cardNode.worldPosition
         val direction = Vector3.subtract(cameraPosition, cardPosition)
+        direction.y = 0f
         val lookRotation = Quaternion.lookRotation(direction, Vector3.up())
         cardNode.worldRotation = lookRotation
     }
@@ -186,6 +188,9 @@ class ARViewModel(): ViewModel() {
 
         val quizNode = Node()
         quizNode.setParent(arSceneView?.scene)
+        quizNode.localPosition = Vector3(0f,-1f,-2f)
+       // quizNode.worldScale = Vector3(0.1f, 0.1f, 0.1f)
+
 
         val dpm = 250 //Default 250 dpm
         ViewRenderable.builder().setView(context, R.layout.view_quiz_card).build()
@@ -193,7 +198,6 @@ class ARViewModel(): ViewModel() {
                 viewRenderable.setSizer { DpToMetersViewSizer(dpm).getSize(viewRenderable.view) }
                 viewRenderable.isShadowCaster = false
                 viewRenderable.isShadowReceiver = false
-
 
                 val quizCardView = viewRenderable.view as? QuizCardView
                 quizCardView?.setViewModel(this, lifecycleOwner)
@@ -215,7 +219,7 @@ class ARViewModel(): ViewModel() {
                 title = "Torso"; description =
                     "This is the skeleton, heart and kidneys of a human torso"
             }
-        }
+    }
 
         val dpm = 500 //Default 250 dpm
         ViewRenderable.builder().setView(context, R.layout.info_card).build()
