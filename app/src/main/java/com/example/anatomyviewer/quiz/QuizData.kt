@@ -1,6 +1,7 @@
 package com.example.anatomyviewer.quiz
 
 import android.util.Log
+import android.widget.RadioGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -49,17 +50,7 @@ class QuizData {
         }
     }
 
-    fun clickedOption1() {
-        Log.d(TAG,"Clicked option 1")
-    }
 
-    fun clickedOption2() {
-        Log.d(TAG,"Clicked option 2")
-    }
-
-    fun clickedOption3() {
-        Log.d(TAG,"Clicked option 3")
-    }
 
     fun clickedConfirmed(){
         activeQuiz?.let {
@@ -68,6 +59,18 @@ class QuizData {
             updateQuestionLabelsForQuiz(it)
         }
 
+    }
+
+    fun opt1Clicked(){
+        Log.d(TAG,"opt 1")
+    }
+
+    fun opt2Clicked(){
+        Log.d(TAG,"opt 2")
+    }
+
+    fun opt3Clicked(){
+        Log.d(TAG,"opt 3")
     }
 
     private fun updateQuestionLabelsForQuiz(it: Quiz){

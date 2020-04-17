@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -7,10 +9,8 @@
             type="com.example.anatomyviewer.ARViewModel" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:id="@+id/quizCard"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="400dp"
         android:layout_height="720dp"
         android:background="@android:color/white"
@@ -53,29 +53,35 @@
 
         <RadioGroup
             android:id="@+id/radio_group"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            >
 
             <RadioButton
                 android:id="@+id/radio_button1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.quizData.clickedOption1()}"
+                android:checked="false"
+                android:onClick="@{() -> viewModel.quizData.opt1Clicked()}"
                 android:text="@{viewModel.quizData.opt1Text}" />
 
             <RadioButton
                 android:id="@+id/radio_button2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.quizData.clickedOption2()}"
+                android:checked="false"
+                android:onClick="@{() -> viewModel.quizData.opt2Clicked()}"
                 android:text="@{viewModel.quizData.opt2Text}" />
 
             <RadioButton
                 android:id="@+id/radio_button3"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.quizData.clickedOption3()}"
+                android:checked="false"
+                android:onClick="@{() -> viewModel.quizData.opt3Clicked()}"
                 android:text="@{viewModel.quizData.opt3Text}" />
 
         </RadioGroup>
