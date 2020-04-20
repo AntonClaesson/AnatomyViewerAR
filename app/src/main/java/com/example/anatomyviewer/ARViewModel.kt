@@ -207,6 +207,9 @@ class ARViewModel(): ViewModel() {
                     childModelNode.renderable = renderable
                     childModelNode.setParent(baseNode)
                     childModelNode.localPosition = Vector3(0f,0f,0f)
+                    
+                    //Save the materials of the child models
+                    defaultMaterials.add(MaterialDefinition(renderable.material, model))
                 }
             }
         }
