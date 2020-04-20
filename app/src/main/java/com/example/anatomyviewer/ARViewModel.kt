@@ -50,6 +50,7 @@ class ARViewModel(): ViewModel() {
     private var baseModel: BaseModel? = null
 
     private var defaultMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    private var customMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
 
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
@@ -68,6 +69,9 @@ class ARViewModel(): ViewModel() {
         // Initialize quizdata
         quizData = QuizData()
 
+        // Initialize custom materials
+        createCustomMaterials()
+
         //Setup observers
         trackedImageUpdated.observe(lifecycleOwner, Observer { event ->
             event?.getContentIfNotHandledOrReturnNull()?.let { image ->
@@ -76,6 +80,13 @@ class ARViewModel(): ViewModel() {
                 createQuiz()
             }
         })
+    }
+
+    private fun createCustomMaterials(){
+        ModelRenderable.builder().setSource(context, R.raw.transparent).build().thenAccept { renderable ->
+            val transparentMaterial = renderable.material
+            customMaterials.add(MaterialDefinition(transparentMaterial, R.raw.transparent))
+        }
     }
 
     fun reset(context: Context){
@@ -207,7 +218,7 @@ class ARViewModel(): ViewModel() {
                     childModelNode.renderable = renderable
                     childModelNode.setParent(baseNode)
                     childModelNode.localPosition = Vector3(0f,0f,0f)
-                    
+
                     //Save the materials of the child models
                     defaultMaterials.add(MaterialDefinition(renderable.material, model))
                 }
