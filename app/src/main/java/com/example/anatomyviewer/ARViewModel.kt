@@ -182,10 +182,35 @@ class ARViewModel(): ViewModel() {
             baseNode.renderable = renderable
             baseNode.select()
 
+            buildChildModels(baseModel)
 
         }.exceptionally { throwable ->
             Log.e(TAG, "Could not create ModelRenderable", throwable)
             return@exceptionally null
+        }
+    }
+
+
+    private fun buildChildModels(baseModel: BaseModel) {
+        addChildModelNamesTo(baseModel)
+        baseModel.childModelNames.forEach { model ->
+            ModelRenderable.builder().setSource(context, model).build().thenAccept { renderable ->
+                (baseModel.baseNode)?.let { baseNode ->
+                    val childModelNode = Node()
+                    childModelNode.renderable = renderable
+                    childModelNode.setParent(baseNode)
+                    childModelNode.localPosition = Vector3(0f,0f,0f)
+                }
+            }
+        }
+    }
+
+
+    private fun addChildModelNamesTo(baseModel: BaseModel){
+        when(baseModel.name){
+            R.raw.hand_bone -> {
+                baseModel.childModelNames.add(R.raw.hand_skin)
+            }
         }
     }
 
