@@ -52,25 +52,15 @@ dependencies {
 
 }
 
-
-sceneform.asset('sampledata/dino.fbx',
+//HAND ---------------------------
+sceneform.asset('sampledata/Hand/Hand_bone.fbx',
         'default',
-        'sampledata/dino.sfa',
-        'src/main/res/raw/dino')
+        'sampledata/Hand/Hand_bone.sfa',
+        'src/main/res/raw/hand_bone')
 
-sceneform.asset('sampledata/lion.fbx',
+sceneform.asset('sampledata/Hand/Hand_skin.fbx',
         'default',
-        'sampledata/lion.sfa',
-        'src/main/res/raw/lion')
+        'sampledata/Hand/Hand_skin.sfa',
+        'src/main/res/raw/hand_skin')
 
-
-
-sceneform.asset('sampledata/bone.fbx',
-        'default',
-        'sampledata/bone.sfa',
-        'src/main/res/raw/bone')
-
-sceneform.asset('sampledata/bone_with_heart_kidney.fbx',
-        'default',
-        'sampledata/bone_with_heart_kidney.sfa',
-        'src/main/res/raw/bone_with_heart_kidney')
+//---------------------------------

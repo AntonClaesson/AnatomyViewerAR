@@ -4,19 +4,18 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.example.anatomyviewer.Models.BaseModel
 import com.example.anatomyviewer.quiz.QuizCardView
 import com.example.anatomyviewer.quiz.QuizData
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.DpToMetersViewSizer
@@ -31,10 +30,8 @@ class ARViewModel(): ViewModel() {
 
 
     //DATA
-    val IMAGE_1_NAME: String = "building.jpg"
-    val IMAGE_2_NAME: String = "earth.jpg"
-    val IMAGE_3_NAME: String = "queen_of_diamonds.jpg"
-    val IMAGE_4_NAME: String = "ten_of_spades.jpg"
+    val IMAGE_1_NAME: String = "queen_of_diamonds.jpg"
+    val IMAGE_2_NAME: String = "ten_of_spades.jpg"
 
     // Observers
     val trackedImageUpdated = MutableLiveData<Event<AugmentedImage?>>()
@@ -47,8 +44,9 @@ class ARViewModel(): ViewModel() {
             field = value
             trackedImageUpdated.value = Event(value)
         }
-    private var modelAnchorNode: AnchorNode? = null     // A node attached to the tracked AugmentedImage anchor
-    private var modelNode: TransformableNode? = null    // A node to which the model is attached
+
+    private var baseModel: BaseModel? = null
+
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
     var quizData: QuizData? = null
@@ -78,29 +76,29 @@ class ARViewModel(): ViewModel() {
 
     fun reset(context: Context){
         currentlyTrackedImage = null
-        trackNewImages = true
 
-        if (modelAnchorNode != null) {
-            val anchorNode = modelAnchorNode!!
-            if (anchorNode.anchor != null) {
-                anchorNode.anchor!!.detach()
-            }
-            this.arSceneView?.scene?.removeChild(modelAnchorNode)
+        // Remove model and its anchor
+        (baseModel?.modelAnchorNode)?.let {
+            arSceneView?.scene?.removeChild(it)
+            it.anchor?.detach()
         }
+        baseModel?.baseNode?.setParent(null)
+        baseModel = null
 
-        arSceneView?.scene?.removeChild(quizCardNode)
+        // Remove quiz
         quizCardNode?.setParent(null)
         quizCardNode = null
+
+        trackNewImages = true
         Toast.makeText(context, "Scanning for new image", Toast.LENGTH_SHORT).show()
     }
 
     fun onUpdate(frame: Frame) {
         updateTrackedImageForFrame(frame)
-       // updateCardNodeForFrame(frame, infoCardNode)
         updateCardNodeForFrame(frame, quizCardNode)
-    }
+}
 
-    fun updateTrackedImageForFrame(frame: Frame) {
+    private fun updateTrackedImageForFrame(frame: Frame) {
         // Check if tracking of new images is requested, otherwise return
         if (!trackNewImages) return
 
@@ -143,45 +141,52 @@ class ARViewModel(): ViewModel() {
         val trackedImage = currentlyTrackedImage ?: return
 
         val id = trackedImage.name
-        var model = R.raw.dino //Default fallback model
+
+        var newBaseModel = BaseModel()
+        newBaseModel.name = R.raw.hand_bone // default fallback model
+
         when(id){
-            IMAGE_3_NAME -> {model = R.raw.bone }
-            IMAGE_4_NAME -> {model = R.raw.bone_with_heart_kidney}
+            IMAGE_1_NAME -> {newBaseModel.name = R.raw.hand_bone }
+            IMAGE_2_NAME -> {newBaseModel.name = R.raw.hand_skin}
         }
 
-        // Load model from file
-        ModelRenderable.builder().setSource(context, model).build().thenAccept { renderable ->
-            renderable.isShadowCaster = true
-            renderable.isShadowReceiver = false
+        buildModel(newBaseModel, trackedImage)
+        baseModel = newBaseModel
+    }
 
+
+    private fun buildModel(baseModel: BaseModel, trackedImage: AugmentedImage){
+        // First create the base model renderable
+        ModelRenderable.builder().setSource(context, baseModel.name).build().thenAccept { renderable ->
+            renderable.isShadowCaster = true
+            renderable.isShadowReceiver = true
+
+            // Create the anchor attached to the image
             val anchor = trackedImage.createAnchor(trackedImage.centerPose)
-            modelAnchorNode = AnchorNode(anchor).apply {
+            baseModel.modelAnchorNode = AnchorNode(anchor).apply {
                 setParent(arSceneView?.scene)
             }
 
-            // Finish loading of model
-            val node = TransformableNode(this.transformationSystem)
-            node.rotationController.isEnabled = true
-            node.scaleController.isEnabled = true
-            node.translationController.isEnabled = false
-            node.scaleController.maxScale =node.scaleController.maxScale*1.0f
-            node.scaleController.minScale = node.scaleController.minScale*0.1f
+            // Create the base model node and attach it to the model anchor node
+            val baseNode = TransformableNode(this.transformationSystem)
+            baseNode.rotationController.isEnabled = true
+            baseNode.scaleController.isEnabled = true
+            baseNode.translationController.isEnabled = false
+            baseNode.scaleController.maxScale = 2.0f
+            baseNode.scaleController.minScale = 0.8f
 
-            node.localPosition = Vector3(0f,0.05f,0f)
+            //baseNode.localPosition = Vector3(0f,0.05f,0f)
+
+            baseModel.baseNode = baseNode
+            baseNode.setParent(baseModel.modelAnchorNode)
+            baseNode.renderable = renderable
+            baseNode.select()
 
 
-            modelNode = node
-            node.setParent(modelAnchorNode)
-            node.renderable = renderable
-            node.select()
-
-           // createViewRenderableForNode(node)
-
+        }.exceptionally { throwable ->
+            Log.e(TAG, "Could not create ModelRenderable", throwable)
+            return@exceptionally null
         }
-            .exceptionally { throwable ->
-                Log.e(TAG, "Could not create ModelRenderable", throwable)
-                return@exceptionally null
-            }
     }
 
     private fun createQuiz() {
@@ -189,8 +194,6 @@ class ARViewModel(): ViewModel() {
         when (id) {
             IMAGE_1_NAME -> { QuizData.QuizType.MODEL1 }
             IMAGE_2_NAME -> { QuizData.QuizType.MODEL2 }
-            IMAGE_3_NAME -> { QuizData.QuizType.MODEL3 }
-            IMAGE_4_NAME -> { QuizData.QuizType.MODEL4 }
             else -> { null }
         }?.let {
             quizData?.makeNewQuiz(it)
@@ -217,57 +220,6 @@ class ARViewModel(): ViewModel() {
             }
     }
 
-    private fun createViewRenderableForNode(parent: Node) {
-        val id = currentlyTrackedImage?.name ?: return
-        var title = "Not available"
-        var description = "Not available"
-        when (id) {
-            IMAGE_3_NAME -> {
-                title = "Skeleton"; description = "This is the skeleton of a human torso"
-            }
-            IMAGE_4_NAME -> {
-                title = "Torso"; description =
-                    "This is the skeleton, heart and kidneys of a human torso"
-            }
-    }
-
-        val dpm = 500 //Default 250 dpm
-        ViewRenderable.builder().setView(context, R.layout.info_card).build()
-            .thenAccept { viewRenderable ->
-                viewRenderable.setSizer { DpToMetersViewSizer(dpm).getSize(viewRenderable.view) }
-                val titleTextView = viewRenderable.view.findViewById<TextView>(R.id.title)
-                titleTextView.text = title
-                val descriptionTextView =
-                    viewRenderable.view.findViewById<TextView>(R.id.description)
-                descriptionTextView.text = description
-
-                viewRenderable.isShadowCaster = false
-                viewRenderable.isShadowReceiver = false
-
-                val infoCardNode = Node()
-                infoCardNode.setParent(parent)
-                infoCardNode.renderable = viewRenderable
-
-                val modelBoundingBox = parent.collisionShape as Box
-                val infoCardBoundingBox = infoCardNode.collisionShape as Box
-
-                infoCardNode.localPosition = Vector3(
-                    modelBoundingBox.extents.x / 2 + infoCardBoundingBox.extents.x / 2 + 0.05f,
-                    0.2f,
-                    0f
-                )
-
-                infoCardNode.setOnTapListener { hitTestResult, motionEvent ->
-                    Toast.makeText(
-                        this.context,
-                        "Tapped infoCard card!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-              //  this.infoCardNode = infoCardNode
-            }
-    }
 
     fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
 
@@ -277,9 +229,6 @@ class ARViewModel(): ViewModel() {
             config.augmentedImageDatabase = AugmentedImageDatabase(session).also { database ->
                 database.addImage(IMAGE_1_NAME,loadAugmentedImageBitmap(IMAGE_1_NAME))
                 database.addImage(IMAGE_2_NAME,loadAugmentedImageBitmap(IMAGE_2_NAME))
-                database.addImage(IMAGE_3_NAME,loadAugmentedImageBitmap(IMAGE_3_NAME))
-                database.addImage(IMAGE_4_NAME,loadAugmentedImageBitmap(IMAGE_4_NAME))
-
             }
             return true
         } catch (e: IllegalArgumentException) {

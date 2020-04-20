@@ -10,7 +10,7 @@ class QuizData {
     private val TAG = QuizData::class.java.toString()
 
     enum class QuizType {
-        MODEL1, MODEL2, MODEL3, MODEL4
+        MODEL1, MODEL2
     }
 
     private var activeQuiz: Quiz? = null
@@ -39,16 +39,15 @@ class QuizData {
     private var _selectedOption = MutableLiveData<Int>(null)
     var selectedOption: LiveData<Int> = _selectedOption
 
+
     fun makeNewQuiz(quizType: QuizType) {
         activeQuiz = when (quizType) {
             QuizType.MODEL1 -> { createQuiz1() }
             QuizType.MODEL2 -> { createQuiz2() }
-            QuizType.MODEL3 -> {null}
-            QuizType.MODEL4 -> {null}
         }
 
         activeQuiz?.let {
-           updateQuestionLabelsForQuiz(it)
+           updateLabelsForQuiz(it)
         }
     }
 
@@ -58,7 +57,7 @@ class QuizData {
         activeQuiz?.let {
             // Check the answer and update score
             val question = it.getCurrentQuestion() ?: return // TODO: handle finished
-            val guess = _selectedOption.value ?: return // TODO: Handle not selected
+            val guess = selectedOption.value ?: return // TODO: Handle not selected
 
             if (it.guessOption(guess, question)) {
                 it.addScore(1)
