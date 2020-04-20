@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.anatomyviewer.Models.BaseModel
+import com.example.anatomyviewer.Models.MaterialDefinition
 import com.example.anatomyviewer.quiz.QuizCardView
 import com.example.anatomyviewer.quiz.QuizData
 import com.google.ar.core.*
@@ -19,6 +20,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.DpToMetersViewSizer
+import com.google.ar.sceneform.rendering.Material
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
@@ -46,6 +48,8 @@ class ARViewModel(): ViewModel() {
         }
 
     private var baseModel: BaseModel? = null
+
+    private var defaultMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
 
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
@@ -143,11 +147,11 @@ class ARViewModel(): ViewModel() {
         val id = trackedImage.name
 
         var newBaseModel = BaseModel()
-        newBaseModel.name = R.raw.hand_bone // default fallback model
+        newBaseModel.modelID = R.raw.hand_bone // default fallback model
 
         when(id){
-            IMAGE_1_NAME -> {newBaseModel.name = R.raw.hand_skin }
-            IMAGE_2_NAME -> {newBaseModel.name = R.raw.hand_bone}
+            IMAGE_1_NAME -> {newBaseModel.modelID = R.raw.hand_skin }
+            IMAGE_2_NAME -> {newBaseModel.modelID = R.raw.hand_bone}
         }
 
         buildModel(newBaseModel, trackedImage)
@@ -157,9 +161,12 @@ class ARViewModel(): ViewModel() {
 
     private fun buildModel(baseModel: BaseModel, trackedImage: AugmentedImage){
         // First create the base model renderable
-        ModelRenderable.builder().setSource(context, baseModel.name).build().thenAccept { renderable ->
+        ModelRenderable.builder().setSource(context, baseModel.modelID).build().thenAccept { renderable ->
             renderable.isShadowCaster = true
             renderable.isShadowReceiver = true
+
+            //Save the models default material
+            defaultMaterials.add(MaterialDefinition(renderable.material, baseModel.modelID))
 
             // Create the anchor attached to the image
             val anchor = trackedImage.createAnchor(trackedImage.centerPose)
@@ -193,7 +200,7 @@ class ARViewModel(): ViewModel() {
 
     private fun buildChildModels(baseModel: BaseModel) {
         addChildModelNamesTo(baseModel)
-        baseModel.childModelNames.forEach { model ->
+        baseModel.childModelIDs.forEach { model ->
             ModelRenderable.builder().setSource(context, model).build().thenAccept { renderable ->
                 (baseModel.baseNode)?.let { baseNode ->
                     val childModelNode = Node()
@@ -207,9 +214,9 @@ class ARViewModel(): ViewModel() {
 
 
     private fun addChildModelNamesTo(baseModel: BaseModel){
-        when(baseModel.name){
+        when(baseModel.modelID){
             R.raw.hand_skin -> {
-                baseModel.childModelNames.add(R.raw.hand_bone)
+                baseModel.childModelIDs.add(R.raw.hand_bone)
             }
         }
     }
