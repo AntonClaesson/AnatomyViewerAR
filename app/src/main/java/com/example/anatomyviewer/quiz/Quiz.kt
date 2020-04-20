@@ -30,10 +30,12 @@ class Quiz(val questions: MutableList<Question>) {
         currentQuestionIndex = currentQuestionIndex + 1
     }
 
-    fun guessOption(guess: Int) {
-        if (guess == getCurrentQuestion()?.correctOption) {
-            score = score + 1
-        }
+    fun guessOption(guess: Int, question: Question): Boolean {
+        return guess == question.correctOption
+    }
+
+    fun addScore(value: Int){
+        score = score + value
     }
 
     fun getScore(): Int {

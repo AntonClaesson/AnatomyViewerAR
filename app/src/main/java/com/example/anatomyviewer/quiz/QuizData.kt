@@ -36,6 +36,8 @@ class QuizData {
     private var _opt3Text = MutableLiveData<String>("")
     var opt3Text: LiveData<String> = _opt3Text
 
+    private var _selectedOption = MutableLiveData<Int>(null)
+    var selectedOption: LiveData<Int> = _selectedOption
 
     fun makeNewQuiz(quizType: QuizType) {
         activeQuiz = when (quizType) {
@@ -54,26 +56,42 @@ class QuizData {
 
     fun clickedConfirmed(){
         activeQuiz?.let {
-            //Update the question
+            // Check the answer and update score
+            val question = it.getCurrentQuestion() ?: return // TODO: handle finished
+            val guess = _selectedOption.value ?: return // TODO: Handle not selected
+
+            if (it.guessOption(guess, question)) {
+                it.addScore(1)
+                //TODO: Show some indicator that it was correct
+            } else {
+                //TODO: Show some indicator that it was wrong
+            }
+            //Update the question and the labels
             it.nextQuestion()
-            updateQuestionLabelsForQuiz(it)
+            updateLabelsForQuiz(it)
         }
 
     }
 
     fun opt1Clicked(){
-        Log.d(TAG,"opt 1")
+        activeQuiz?.let {
+            _selectedOption.value = 1
+        }
     }
 
     fun opt2Clicked(){
-        Log.d(TAG,"opt 2")
+        activeQuiz?.let {
+            _selectedOption.value = 2
+        }
     }
 
     fun opt3Clicked(){
-        Log.d(TAG,"opt 3")
+        activeQuiz?.let {
+            _selectedOption.value = 3
+        }
     }
 
-    private fun updateQuestionLabelsForQuiz(it: Quiz){
+    private fun updateLabelsForQuiz(it: Quiz){
         updateScoreLabel()
         _questionNumbText.value = "Question: ${it.getCurrentQuestionIndex()+1}/${it.questions.count()}"
         _timeText.value = "00:00"
