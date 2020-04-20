@@ -1,0 +1,12 @@
+material {
+    name : "transparent_material",
+    shadingModel : unlit,
+    blending : transparent,
+}
+
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor = vec4(1.0, 0.0, 0.0, 0.5);
+    }
+}

@@ -1,0 +1,22 @@
+{
+  materials: [
+    {
+      name: "transparent_material",
+      parameters: [],
+      source: 'sampledata/Materials/transparent/transparent_material.mat',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+    ],
+    collision: {},
+    file: 'sampledata/Materials/transparent/transparent.obj',
+    name: 'transparent',
+    recenter: 'root',
+    scale: 5,
+  },
+  version: '0.54:2',
+}

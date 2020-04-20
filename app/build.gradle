@@ -52,6 +52,14 @@ dependencies {
 
 }
 
+//MATERIALS -----------------------------
+sceneform.asset('sampledata/Materials/transparent/transparent.obj',
+        'default',
+        'sampledata/Materials/transparent/transparent.sfa',
+        'src/main/res/raw/transparent')
+
+//---------------------------------------
+
 //HAND ---------------------------
 sceneform.asset('sampledata/Hand/Hand_bone.fbx',
         'default',

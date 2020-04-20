@@ -146,8 +146,8 @@ class ARViewModel(): ViewModel() {
         newBaseModel.name = R.raw.hand_bone // default fallback model
 
         when(id){
-            IMAGE_1_NAME -> {newBaseModel.name = R.raw.hand_bone }
-            IMAGE_2_NAME -> {newBaseModel.name = R.raw.hand_skin}
+            IMAGE_1_NAME -> {newBaseModel.name = R.raw.hand_skin }
+            IMAGE_2_NAME -> {newBaseModel.name = R.raw.hand_bone}
         }
 
         buildModel(newBaseModel, trackedImage)
@@ -208,8 +208,8 @@ class ARViewModel(): ViewModel() {
 
     private fun addChildModelNamesTo(baseModel: BaseModel){
         when(baseModel.name){
-            R.raw.hand_bone -> {
-                baseModel.childModelNames.add(R.raw.hand_skin)
+            R.raw.hand_skin -> {
+                baseModel.childModelNames.add(R.raw.hand_bone)
             }
         }
     }
