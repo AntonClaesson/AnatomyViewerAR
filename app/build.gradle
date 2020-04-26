@@ -72,3 +72,26 @@ sceneform.asset('sampledata/Hand/Hand_skin.fbx',
         'src/main/res/raw/hand_skin')
 
 //---------------------------------
+
+//Abdomen -------------------------
+sceneform.asset('sampledata/abdomen/abdomen_skin.fbx',
+        'default',
+        'sampledata/abdomen/abdomen_skin.sfa',
+        'src/main/res/raw/abdomen_skin')
+
+sceneform.asset('sampledata/abdomen/abdomen_bone.fbx',
+        'default',
+        'sampledata/abdomen/abdomen_bone.sfa',
+        'src/main/res/raw/abdomen_bone')
+
+sceneform.asset('sampledata/abdomen/abdomen_heart.fbx',
+        'default',
+        'sampledata/abdomen/abdomen_heart.sfa',
+        'src/main/res/raw/abdomen_heart')
+
+sceneform.asset('sampledata/abdomen/abdomen_kidneys.fbx',
+        'default',
+        'sampledata/abdomen/abdomen_kidneys.sfa',
+        'src/main/res/raw/abdomen_kidneys')
+
+//---------------------------------

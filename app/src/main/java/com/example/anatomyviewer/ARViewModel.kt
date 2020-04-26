@@ -161,7 +161,7 @@ class ARViewModel(): ViewModel() {
 
         when(id){
             IMAGE_1_NAME -> {newBaseModel.modelID = R.raw.hand_skin }
-            IMAGE_2_NAME -> {newBaseModel.modelID = R.raw.hand_bone}
+            IMAGE_2_NAME -> {newBaseModel.modelID = R.raw.abdomen_skin }
         }
 
         buildModel(newBaseModel, trackedImage)
@@ -186,16 +186,15 @@ class ARViewModel(): ViewModel() {
 
             // Create the base model node and attach it to the model anchor node
             val baseNode = TransformableNode(this.transformationSystem)
+            baseNode.setParent(baseModel.modelAnchorNode)
+
             baseNode.rotationController.isEnabled = true
             baseNode.scaleController.isEnabled = true
             baseNode.translationController.isEnabled = false
             baseNode.scaleController.maxScale = 2.0f
-            baseNode.scaleController.minScale = 0.8f
-
-            //baseNode.localPosition = Vector3(0f,0.05f,0f)
+            baseNode.scaleController.minScale = 0.1f
 
             baseModel.baseNode = baseNode
-            baseNode.setParent(baseModel.modelAnchorNode)
             baseNode.renderable = renderable
             baseNode.select()
 
@@ -216,7 +215,13 @@ class ARViewModel(): ViewModel() {
                     val childModelNode = Node()
                     childModelNode.renderable = renderable
                     childModelNode.setParent(baseNode)
-                    childModelNode.localPosition = Vector3(0f,0f,0f)
+
+                    Log.d(TAG, " ")
+                    val worldpos = childModelNode.worldPosition
+                    val localpos = childModelNode.localPosition
+
+                    Log.d(TAG, "World pos of child node : $worldpos")
+                    Log.d(TAG, "Local pos of child node : $localpos")
 
                     //Save the materials of the child models
                     defaultMaterials.add(MaterialDefinition(renderable.material, model))
@@ -231,7 +236,13 @@ class ARViewModel(): ViewModel() {
             R.raw.hand_skin -> {
                 baseModel.childModelIDs.add(R.raw.hand_bone)
             }
+            R.raw.abdomen_skin -> {
+                baseModel.childModelIDs.add(R.raw.abdomen_bone)
+                baseModel.childModelIDs.add(R.raw.abdomen_heart)
+                baseModel.childModelIDs.add(R.raw.abdomen_kidneys)
+            }
         }
+
     }
 
     private fun createQuiz() {

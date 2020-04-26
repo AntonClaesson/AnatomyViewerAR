@@ -1,0 +1,60 @@
+{
+  animations: [
+    {
+      path: 'sampledata/abdomen/abdomen_kidneys.fbx',
+    },
+  ],
+  materials: [
+    {
+      name: 'Kidneys',
+      parameters: [
+        {
+          baseColor: [
+            0.20791599999999999,
+            0.015945000000000001,
+            0.030054999999999998,
+            1,
+          ],
+        },
+        {
+          baseColorMap: null,
+        },
+        {
+          normalMap: null,
+        },
+        {
+          interpolatedColor: null,
+        },
+        {
+          metallic: 0,
+        },
+        {
+          metallicMap: null,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          roughnessMap: null,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/fbx_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'Orientation',
+      'BoneIndices',
+      'BoneWeights',
+    ],
+    collision: {},
+    file: 'sampledata/abdomen/abdomen_kidneys.fbx',
+    name: 'abdomen_kidneys',
+    recenter: false,
+  },
+  version: '0.54:2',
+}
