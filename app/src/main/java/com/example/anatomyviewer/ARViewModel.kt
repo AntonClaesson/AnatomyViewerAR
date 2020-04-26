@@ -49,8 +49,10 @@ class ARViewModel(): ViewModel() {
 
     private var baseModel: BaseModel? = null
 
-    private var defaultMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
-    private var customMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    //private var defaultMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    //private var customMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    private var defaultMaterials: HashMap<Int,Material> = hashMapOf()
+    private var customMaterials: HashMap<Int,Material> = hashMapOf()
 
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
@@ -85,8 +87,14 @@ class ARViewModel(): ViewModel() {
     private fun createCustomMaterials(){
         ModelRenderable.builder().setSource(context, R.raw.transparent).build().thenAccept { renderable ->
             val transparentMaterial = renderable.material
-            customMaterials.add(MaterialDefinition(transparentMaterial, R.raw.transparent))
+            customMaterials[R.raw.transparent] = transparentMaterial
         }
+
+        ModelRenderable.builder().setSource(context, R.raw.yellow_opaque).build().thenAccept { renderable ->
+            val yellowMaterial = renderable.material
+            customMaterials[R.raw.yellow_opaque] = yellowMaterial
+        }
+
     }
 
     fun reset(context: Context){
@@ -157,12 +165,12 @@ class ARViewModel(): ViewModel() {
 
         val id = trackedImage.name
 
-        var newBaseModel = BaseModel()
+        val newBaseModel = BaseModel()
         newBaseModel.modelID = R.raw.hand_bone // default fallback model
 
         when(id){
             IMAGE_1_NAME -> {newBaseModel.modelID = R.raw.hand_skin }
-            IMAGE_2_NAME -> {newBaseModel.modelID = R.raw.hand_bone}
+            IMAGE_2_NAME -> {newBaseModel.modelID = R.raw.abdomen_skin }
         }
 
         buildModel(newBaseModel, trackedImage)
@@ -173,11 +181,11 @@ class ARViewModel(): ViewModel() {
     private fun buildModel(baseModel: BaseModel, trackedImage: AugmentedImage){
         // First create the base model renderable
         ModelRenderable.builder().setSource(context, baseModel.modelID).build().thenAccept { renderable ->
-            renderable.isShadowCaster = true
+            renderable.isShadowCaster = false
             renderable.isShadowReceiver = true
 
             //Save the models default material
-            defaultMaterials.add(MaterialDefinition(renderable.material, baseModel.modelID))
+            defaultMaterials[baseModel.modelID] = renderable.material
 
             // Create the anchor attached to the image
             val anchor = trackedImage.createAnchor(trackedImage.centerPose)
@@ -187,16 +195,17 @@ class ARViewModel(): ViewModel() {
 
             // Create the base model node and attach it to the model anchor node
             val baseNode = TransformableNode(this.transformationSystem)
+            baseNode.setParent(baseModel.modelAnchorNode)
+
             baseNode.rotationController.isEnabled = true
             baseNode.scaleController.isEnabled = true
             baseNode.translationController.isEnabled = false
             baseNode.scaleController.maxScale = 2.0f
-            baseNode.scaleController.minScale = 0.8f
+            baseNode.scaleController.minScale = 0.1f
 
-            //baseNode.localPosition = Vector3(0f,0.05f,0f)
+            renderable.material = customMaterials[R.raw.transparent]
 
             baseModel.baseNode = baseNode
-            baseNode.setParent(baseModel.modelAnchorNode)
             baseNode.renderable = renderable
             baseNode.select()
 
@@ -214,13 +223,13 @@ class ARViewModel(): ViewModel() {
         baseModel.childModelIDs.forEach { model ->
             ModelRenderable.builder().setSource(context, model).build().thenAccept { renderable ->
                 (baseModel.baseNode)?.let { baseNode ->
+
+                    //Save the materials of the child models
+                    defaultMaterials[model] = renderable.material
+
                     val childModelNode = Node()
                     childModelNode.renderable = renderable
                     childModelNode.setParent(baseNode)
-                    childModelNode.localPosition = Vector3(0f,0f,0f)
-
-                    //Save the materials of the child models
-                    defaultMaterials.add(MaterialDefinition(renderable.material, model))
                 }
             }
         }
@@ -232,7 +241,13 @@ class ARViewModel(): ViewModel() {
             R.raw.hand_skin -> {
                 baseModel.childModelIDs.add(R.raw.hand_bone)
             }
+            R.raw.abdomen_skin -> {
+                baseModel.childModelIDs.add(R.raw.abdomen_bone)
+                baseModel.childModelIDs.add(R.raw.abdomen_heart)
+                baseModel.childModelIDs.add(R.raw.abdomen_kidneys)
+            }
         }
+
     }
 
     private fun createQuiz() {

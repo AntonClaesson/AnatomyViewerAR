@@ -54,7 +54,7 @@
     collision: {},
     file: 'sampledata/Hand/Hand_skin.fbx',
     name: 'Hand_skin',
-    recenter: 'root',
+    recenter: false,
   },
   version: '0.54:2',
 }
