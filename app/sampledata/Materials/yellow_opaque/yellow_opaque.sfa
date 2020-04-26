@@ -1,0 +1,21 @@
+{
+  materials: [
+    {
+      name: 'None',
+      parameters: [],
+      source: 'sampledata/Materials/yellow_opaque/yellow_opaque.mat',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'TexCoord',
+      'Orientation',
+    ],
+    collision: {},
+    file: 'sampledata/Materials/yellow_opaque/yellow_opaque.obj',
+    name: 'yellow_opaque',
+    recenter: 'root',
+  },
+  version: '0.54:2',
+}

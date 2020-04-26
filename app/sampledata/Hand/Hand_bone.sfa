@@ -54,7 +54,7 @@
     collision: {},
     file: 'sampledata/Hand/Hand_bone.fbx',
     name: 'Hand_bone',
-    recenter: 'root',
+    recenter: false,
   },
   version: '0.54:2',
 }
