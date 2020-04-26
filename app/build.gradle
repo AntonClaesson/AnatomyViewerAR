@@ -58,6 +58,10 @@ sceneform.asset('sampledata/Materials/transparent/transparent.obj',
         'sampledata/Materials/transparent/transparent.sfa',
         'src/main/res/raw/transparent')
 
+sceneform.asset('sampledata/Materials/yellow_opaque/yellow_opaque.obj',
+        'default',
+        'sampledata/Materials/yellow_opaque/yellow_opaque.sfa',
+        'src/main/res/raw/yellow_opaque')
 //---------------------------------------
 
 //HAND ---------------------------

@@ -20,6 +20,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.DpToMetersViewSizer
+import com.google.ar.sceneform.rendering.Material
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
@@ -48,8 +49,10 @@ class ARViewModel(): ViewModel() {
 
     private var baseModel: BaseModel? = null
 
-    private var defaultMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
-    private var customMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    //private var defaultMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    //private var customMaterials: MutableSet<MaterialDefinition> = mutableSetOf()
+    private var defaultMaterials: HashMap<Int,Material> = hashMapOf()
+    private var customMaterials: HashMap<Int,Material> = hashMapOf()
 
     //private var infoCardNode: Node? = null
     private var quizCardNode: Node? = null
@@ -84,8 +87,14 @@ class ARViewModel(): ViewModel() {
     private fun createCustomMaterials(){
         ModelRenderable.builder().setSource(context, R.raw.transparent).build().thenAccept { renderable ->
             val transparentMaterial = renderable.material
-            customMaterials.add(MaterialDefinition(transparentMaterial, R.raw.transparent))
+            customMaterials[R.raw.transparent] = transparentMaterial
         }
+
+        ModelRenderable.builder().setSource(context, R.raw.yellow_opaque).build().thenAccept { renderable ->
+            val yellowMaterial = renderable.material
+            customMaterials[R.raw.yellow_opaque] = yellowMaterial
+        }
+
     }
 
     fun reset(context: Context){
@@ -172,11 +181,11 @@ class ARViewModel(): ViewModel() {
     private fun buildModel(baseModel: BaseModel, trackedImage: AugmentedImage){
         // First create the base model renderable
         ModelRenderable.builder().setSource(context, baseModel.modelID).build().thenAccept { renderable ->
-            renderable.isShadowCaster = true
+            renderable.isShadowCaster = false
             renderable.isShadowReceiver = true
 
             //Save the models default material
-            defaultMaterials.add(MaterialDefinition(renderable.material, baseModel.modelID))
+            defaultMaterials[baseModel.modelID] = renderable.material
 
             // Create the anchor attached to the image
             val anchor = trackedImage.createAnchor(trackedImage.centerPose)
@@ -193,6 +202,8 @@ class ARViewModel(): ViewModel() {
             baseNode.translationController.isEnabled = false
             baseNode.scaleController.maxScale = 2.0f
             baseNode.scaleController.minScale = 0.1f
+
+            renderable.material = customMaterials[R.raw.transparent]
 
             baseModel.baseNode = baseNode
             baseNode.renderable = renderable
@@ -212,19 +223,13 @@ class ARViewModel(): ViewModel() {
         baseModel.childModelIDs.forEach { model ->
             ModelRenderable.builder().setSource(context, model).build().thenAccept { renderable ->
                 (baseModel.baseNode)?.let { baseNode ->
+
+                    //Save the materials of the child models
+                    defaultMaterials[model] = renderable.material
+
                     val childModelNode = Node()
                     childModelNode.renderable = renderable
                     childModelNode.setParent(baseNode)
-
-                    Log.d(TAG, " ")
-                    val worldpos = childModelNode.worldPosition
-                    val localpos = childModelNode.localPosition
-
-                    Log.d(TAG, "World pos of child node : $worldpos")
-                    Log.d(TAG, "Local pos of child node : $localpos")
-
-                    //Save the materials of the child models
-                    defaultMaterials.add(MaterialDefinition(renderable.material, model))
                 }
             }
         }
