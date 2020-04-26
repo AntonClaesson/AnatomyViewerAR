@@ -20,7 +20,6 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.DpToMetersViewSizer
-import com.google.ar.sceneform.rendering.Material
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.TransformableNode
@@ -157,7 +156,7 @@ class ARViewModel(): ViewModel() {
 
         val id = trackedImage.name
 
-        var newBaseModel = BaseModel()
+        val newBaseModel = BaseModel()
         newBaseModel.modelID = R.raw.hand_bone // default fallback model
 
         when(id){

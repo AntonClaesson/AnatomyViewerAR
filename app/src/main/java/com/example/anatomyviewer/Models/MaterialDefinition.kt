@@ -10,4 +10,8 @@ class MaterialDefinition(val material: Material, var id: Int) {
         }
         return false
     }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
