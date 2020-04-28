@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <fragment
-            android:id="@+id/ux_fragment"
+            android:id="@+id/anatomy_viewer_fragment"
             android:name="com.example.anatomyviewer.ar.AnatomyViewerFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

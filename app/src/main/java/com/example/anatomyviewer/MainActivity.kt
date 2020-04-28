@@ -18,9 +18,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as AnatomyViewerFragment
+        arFragment = supportFragmentManager.findFragmentById(R.id.anatomy_viewer_fragment) as AnatomyViewerFragment
         binding.resetButton.setOnClickListener {
-            // Reset ar world
+            resetArWorld()
         }
+    }
+
+    private fun resetArWorld(){
+        // Pause the old ar experience
+        arFragment.arSceneView.pause()
+        // Create a new one
+        val newArFragment = AnatomyViewerFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.anatomy_viewer_fragment, newArFragment).commit()
     }
 }
