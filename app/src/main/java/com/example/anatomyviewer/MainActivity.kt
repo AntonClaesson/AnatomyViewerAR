@@ -3,12 +3,12 @@ package com.example.anatomyviewer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import com.example.anatomyviewer.ar.AnatomyViewerFragment
 import com.example.anatomyviewer.databinding.ActivityMainBinding
 
-
-private val TAG: String = MainActivity::class.java.simpleName
-
 class MainActivity : AppCompatActivity() {
+
+    private val TAG: String = MainActivity::class.java.toString()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as AnatomyViewerFragment
         binding.resetButton.setOnClickListener {
-            arFragment.resetSession()
+            // Reset ar world
         }
     }
 }

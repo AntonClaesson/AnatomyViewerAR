@@ -3,7 +3,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.anatomyviewer.ar.ARViewModel" />
     </data>
 
     <FrameLayout
@@ -12,7 +14,7 @@
 
         <fragment
             android:id="@+id/ux_fragment"
-            android:name="com.example.anatomyviewer.AnatomyViewerFragment"
+            android:name="com.example.anatomyviewer.ar.AnatomyViewerFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

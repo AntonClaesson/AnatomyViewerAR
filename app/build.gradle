@@ -3,7 +3,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'com.google.ar.sceneform.plugin'
+
+apply plugin: 'kotlin-kapt'
+
 
 android {
     compileSdkVersion 29
@@ -49,6 +53,10 @@ dependencies {
 
     // Viewmodel
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    // Dagger
+    implementation 'com.google.dagger:dagger:2.27'
+    kapt 'com.google.dagger:dagger-compiler:2.27'
 
 }
 
