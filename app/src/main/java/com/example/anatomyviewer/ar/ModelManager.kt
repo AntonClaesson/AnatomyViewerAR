@@ -15,7 +15,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import javax.inject.Inject
 
 class ModelManager @Inject constructor(
-    private val viewModel: ARViewModel,
+    private val viewModel: ArViewModel,
     private val arSceneView: ArSceneView,
     private val context: Context,
     private val transformationSystem: TransformationSystem){

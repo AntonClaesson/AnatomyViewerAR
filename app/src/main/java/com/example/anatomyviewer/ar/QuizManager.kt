@@ -15,7 +15,7 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import javax.inject.Inject
 
 class QuizManager @Inject constructor(
-    private val viewModel: ARViewModel,
+    private val viewModel: ArViewModel,
     private val arSceneView: ArSceneView,
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner

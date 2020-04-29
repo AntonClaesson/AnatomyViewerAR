@@ -2,8 +2,7 @@ package com.example.anatomyviewer.ar.di
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
-import com.example.anatomyviewer.ar.ARViewModel
+import com.example.anatomyviewer.ar.ArViewModel
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.ux.TransformationSystem
 import dagger.Module
@@ -12,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 class ArModule(
-    private val viewModel: ARViewModel,
+    private val viewModel: ArViewModel,
     private val arSceneView: ArSceneView,
     private val transformationSystem: TransformationSystem,
     private val context: Context,

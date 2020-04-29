@@ -24,7 +24,7 @@ open class AnatomyViewerFragment : ArFragment() {
     private val TAG = AnatomyViewerFragment::class.java.toString()
 
     // ViewModel containing common data and LiveData for ui-updates
-    lateinit var viewModel: ARViewModel
+    lateinit var arViewModel: ArViewModel
 
     // Object wrapping the logic of the AR session.
     @Inject lateinit var arOrganizer: ArOrganizer
@@ -33,7 +33,7 @@ open class AnatomyViewerFragment : ArFragment() {
         val view =  super.onCreateView(inflater, container, savedInstanceState)
 
         //Instantiate the ViewModel
-        viewModel = ViewModelProvider(this).get(ARViewModel::class.java)
+        arViewModel = ViewModelProvider(this).get(ArViewModel::class.java)
 
         injectArOrganizer()
         arOrganizer.start()
@@ -71,7 +71,7 @@ open class AnatomyViewerFragment : ArFragment() {
         // This makes dagger inject the ArOrganizer, and all its dependencies.
         //Make dagger inject arOrganizer and all of its dependencies
         DaggerArComponent.builder().arModule(
-            ArModule(viewModel, arSceneView,transformationSystem, context!!, viewLifecycleOwner!!)
+            ArModule(arViewModel, arSceneView,transformationSystem, context!!, viewLifecycleOwner)
         ).build().inject(this)
     }
 
@@ -80,16 +80,29 @@ open class AnatomyViewerFragment : ArFragment() {
         this.planeDiscoveryController.hide()
         this.planeDiscoveryController.setInstructionView(null)
         this.arSceneView.planeRenderer.isVisible = false
+        setupArOverlay()
     }
 
+    private fun setupArOverlay() {
+        // Disable the default scan instruction
+        planeDiscoveryController.hide()
+        planeDiscoveryController.setInstructionView(null)
+
+        (view as? ViewGroup)?.let {
+            val arOverlayView = ArOverlayView(it.context)
+            it.addView(arOverlayView)
+            arOverlayView.setViewModel(arViewModel, viewLifecycleOwner)
+        }
+    }
+    
     private fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
 
         fun loadAugmentedImageBitmap(imageName: String): Bitmap = context.assets.open(imageName).use { return BitmapFactory.decodeStream(it) }
 
         try {
             config.augmentedImageDatabase = AugmentedImageDatabase(session).also { database ->
-                database.addImage(viewModel.IMAGE_1_NAME,loadAugmentedImageBitmap(viewModel.IMAGE_1_NAME))
-                database.addImage(viewModel.IMAGE_2_NAME,loadAugmentedImageBitmap(viewModel.IMAGE_2_NAME))
+                database.addImage(arViewModel.IMAGE_1_NAME,loadAugmentedImageBitmap(arViewModel.IMAGE_1_NAME))
+                database.addImage(arViewModel.IMAGE_2_NAME,loadAugmentedImageBitmap(arViewModel.IMAGE_2_NAME))
             }
             return true
         } catch (e: IllegalArgumentException) {
