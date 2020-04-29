@@ -1,10 +1,8 @@
 package com.example.anatomyviewer.ar
 
-import android.content.Context
-import androidx.lifecycle.LifecycleOwner
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Frame
 import javax.inject.Inject

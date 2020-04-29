@@ -50,7 +50,7 @@ open class AnatomyViewerFragment : ArFragment() {
         val config = super.getSessionConfiguration(session)
 
         // Lightning settings
-        config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+        config.lightEstimationMode = Config.LightEstimationMode.AMBIENT_INTENSITY
         config.focusMode = Config.FocusMode.AUTO
 
         // Setup AugmentedImageDatabase
