@@ -1,9 +1,12 @@
-package com.example.anatomyviewer.ar
+package com.example.anatomyviewer.ar.model
 
 import android.content.Context
 import android.util.Log
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
 import com.example.anatomyviewer.R
-import com.example.anatomyviewer.ar.helpers.BaseModel
+import com.example.anatomyviewer.ar.ui.ArViewModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.ArSceneView
@@ -18,7 +21,7 @@ class ModelManager @Inject constructor(
     private val viewModel: ArViewModel,
     private val arSceneView: ArSceneView,
     private val context: Context,
-    private val transformationSystem: TransformationSystem){
+    private val transformationSystem: TransformationSystem) {
 
     private val TAG = ModelManager::class.java.toString()
 
@@ -26,8 +29,14 @@ class ModelManager @Inject constructor(
     private var defaultMaterials: HashMap<Int, Material> = hashMapOf()
     private var customMaterials: HashMap<Int, Material> = hashMapOf()
 
+    private var explorationMode: Boolean = false
+
     init {
         createCustomMaterials()
+    }
+
+    fun startExplorationMode(){
+        viewModel.setSettingsBtnVisibility(true)
     }
 
     private fun createCustomMaterials(){
@@ -56,6 +65,7 @@ class ModelManager @Inject constructor(
         newBaseModel.modelID = R.raw.hand_bone // default fallback model
 
         when(id){
+            //IMPORTANT: The skin models (or the "outmost/largest" model) should be the base model, since that makes it possible to move the entire node structure
             viewModel.IMAGE_1_NAME -> {newBaseModel.modelID = R.raw.hand_skin }
             viewModel.IMAGE_2_NAME -> {newBaseModel.modelID = R.raw.abdomen_skin }
         }
@@ -70,7 +80,7 @@ class ModelManager @Inject constructor(
         // First create the base model renderable
         ModelRenderable.builder().setSource(context, baseModel.modelID).build().thenAccept { renderable ->
             renderable.isShadowCaster = false
-            renderable.isShadowReceiver = true
+            renderable.isShadowReceiver = false
 
             //Save the models default material
             defaultMaterials[baseModel.modelID] = renderable.material
@@ -105,7 +115,6 @@ class ModelManager @Inject constructor(
         }
     }
 
-
     private fun buildChildModels(baseModel: BaseModel) {
         addChildModelNamesTo(baseModel)
         baseModel.childModelIDs.forEach { model ->
@@ -123,7 +132,6 @@ class ModelManager @Inject constructor(
         }
     }
 
-
     private fun addChildModelNamesTo(baseModel: BaseModel){
         when(baseModel.modelID){
             R.raw.hand_skin -> {
@@ -137,5 +145,4 @@ class ModelManager @Inject constructor(
         }
 
     }
-
 }

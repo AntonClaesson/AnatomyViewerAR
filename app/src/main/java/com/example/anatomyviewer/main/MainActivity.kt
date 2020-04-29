@@ -1,11 +1,11 @@
-package com.example.anatomyviewer
+package com.example.anatomyviewer.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.example.anatomyviewer.R
 import com.example.anatomyviewer.ar.AnatomyViewerFragment
-import com.example.anatomyviewer.ar.ArViewModel
 import com.example.anatomyviewer.ar.interfaces.ArFragmentResetListener
 import com.example.anatomyviewer.databinding.ActivityMainBinding
 
@@ -23,7 +23,9 @@ class MainActivity : AppCompatActivity(), ArFragmentResetListener {
         super.onCreate(savedInstanceState)
         mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this,
+            R.layout.activity_main
+        )
         binding.lifecycleOwner = this
         binding.mainActivityViewModel = mainActivityViewModel
 

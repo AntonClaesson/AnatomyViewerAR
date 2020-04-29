@@ -1,4 +1,4 @@
-package com.example.anatomyviewer.ar
+package com.example.anatomyviewer.ar.ui
 
 import android.content.Context
 import android.view.LayoutInflater

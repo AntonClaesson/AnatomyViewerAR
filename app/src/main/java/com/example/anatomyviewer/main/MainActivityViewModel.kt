@@ -1,4 +1,4 @@
-package com.example.anatomyviewer
+package com.example.anatomyviewer.main
 
 import androidx.lifecycle.ViewModel
 
