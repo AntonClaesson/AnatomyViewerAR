@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="mainActivityViewModel"
-            type="com.example.anatomyviewer.MainActivityViewModel" />
+            type="com.example.anatomyviewer.main.MainActivityViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

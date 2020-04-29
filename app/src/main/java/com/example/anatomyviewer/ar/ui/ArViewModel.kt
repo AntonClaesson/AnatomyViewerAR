@@ -1,6 +1,5 @@
-package com.example.anatomyviewer.ar
+package com.example.anatomyviewer.ar.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,12 +18,25 @@ class ArViewModel: ViewModel() {
 
     private val _startQuizBtnVisible = MutableLiveData<Boolean>(false)
     val startQuizBtnVisible: LiveData<Boolean> = _startQuizBtnVisible
+
+    private val _settingsBtnVisible = MutableLiveData<Boolean>(false)
+    val settingsBtnVisible: LiveData<Boolean> = _settingsBtnVisible
+
+    private val _settingsVisible = MutableLiveData<Boolean>(false)
+    val settingsVisible: LiveData<Boolean> = _settingsVisible
+
+    private val _modelSkinVisibility = MutableLiveData<Boolean>(false)
+    val modelSkinVisibility: LiveData<Boolean> = _modelSkinVisibility
     //endregion
 
     //region ui changes
     fun setStartQuizBtnVisibility(value: Boolean){
         _startQuizBtnVisible.value = value
     }
+
+    fun setSettingsBtnVisibility(value: Boolean){
+        _settingsBtnVisible.value = value
+     }
 
     //region button events
     fun resetBtnClicked(){
@@ -33,6 +45,23 @@ class ArViewModel: ViewModel() {
 
     fun startQuizBtnClicked(){
         _uiEvents.value = UiEvent.START_QUIZ_BUTTON_CLICKED
+    }
+
+    fun settingsBtnClicked(){
+        _settingsVisible.value = true
+    }
+
+    fun confirmSettingsBtnClicked(){
+        _settingsVisible.value = false
+        _uiEvents.value = UiEvent.SETTINGS_CONFIRMED_CLICKED
+    }
+
+    fun hideSkinSetting(){
+        _modelSkinVisibility.value = false
+    }
+
+    fun showSkinSetting(){
+        _modelSkinVisibility.value = true
     }
     //endregion
 }

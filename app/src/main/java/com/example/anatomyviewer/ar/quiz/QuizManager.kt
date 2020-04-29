@@ -2,7 +2,7 @@ package com.example.anatomyviewer.ar.quiz
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import com.example.anatomyviewer.ar.ArViewModel
+import com.example.anatomyviewer.ar.ui.ArViewModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Frame
 import com.google.ar.sceneform.ArSceneView

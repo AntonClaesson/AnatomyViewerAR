@@ -15,6 +15,8 @@ import com.example.anatomyviewer.ar.di.ArModule
 import com.example.anatomyviewer.ar.di.DaggerArComponent
 import com.example.anatomyviewer.ar.helpers.UiEvent
 import com.example.anatomyviewer.ar.interfaces.ArFragmentResetListener
+import com.example.anatomyviewer.ar.ui.ArOverlayView
+import com.example.anatomyviewer.ar.ui.ArViewModel
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.ux.ArFragment
@@ -32,7 +34,7 @@ open class AnatomyViewerFragment : ArFragment() {
     lateinit var arViewModel: ArViewModel
 
     // Object wrapping the logic of the AR session.
-    @Inject lateinit var arOrganizer: ArOrganizer
+    @Inject lateinit var arDirector: ArDirector
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  super.onCreateView(inflater, container, savedInstanceState)
@@ -41,7 +43,7 @@ open class AnatomyViewerFragment : ArFragment() {
         arViewModel = ViewModelProvider(this).get(ArViewModel::class.java)
 
         injectArOrganizer()
-        arOrganizer.start()
+        arDirector.start()
 
         return view
     }
@@ -66,10 +68,11 @@ open class AnatomyViewerFragment : ArFragment() {
         return config
     }
 
+
     override fun onUpdate(frameTime: FrameTime?) {
         super.onUpdate(frameTime)
         val frame = this.arSceneView.arFrame ?: return
-        arOrganizer.onUpdate(frame)
+        arDirector.onUpdate(frame)
     }
 
     private fun injectArOrganizer() {
@@ -95,7 +98,8 @@ open class AnatomyViewerFragment : ArFragment() {
         planeDiscoveryController.setInstructionView(null)
 
         (view as? ViewGroup)?.let {
-            val arOverlayView = ArOverlayView(it.context)
+            val arOverlayView =
+                ArOverlayView(it.context)
             it.addView(arOverlayView)
             arOverlayView.setViewModel(arViewModel, viewLifecycleOwner)
         }
