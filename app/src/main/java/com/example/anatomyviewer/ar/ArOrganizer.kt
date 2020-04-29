@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.example.anatomyviewer.ar.helpers.UiEvent
+import com.example.anatomyviewer.ar.quiz.QuizManager
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Frame
 import javax.inject.Inject

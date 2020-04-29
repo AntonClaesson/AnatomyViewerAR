@@ -6,9 +6,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.anatomyviewer.ar.AnatomyViewerFragment
 import com.example.anatomyviewer.ar.ArViewModel
+import com.example.anatomyviewer.ar.interfaces.ArFragmentResetListener
 import com.example.anatomyviewer.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ArFragmentResetListener {
 
     private val TAG: String = MainActivity::class.java.toString()
 
@@ -27,13 +28,15 @@ class MainActivity : AppCompatActivity() {
         binding.mainActivityViewModel = mainActivityViewModel
 
         arFragment = supportFragmentManager.findFragmentById(R.id.anatomy_viewer_fragment) as AnatomyViewerFragment
+        arFragment.resetListener = this
     }
 
-    private fun resetArWorld(){
+    override fun resetArFragment() {
         // Pause the old ar experience
         arFragment.arSceneView.pause()
         // Create a new one
         val newArFragment = AnatomyViewerFragment()
+        newArFragment.resetListener = this
         supportFragmentManager.beginTransaction().replace(R.id.anatomy_viewer_fragment, newArFragment).commit()
     }
 }

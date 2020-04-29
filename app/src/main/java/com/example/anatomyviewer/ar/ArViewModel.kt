@@ -24,14 +24,15 @@ class ArViewModel: ViewModel() {
     //region ui changes
     fun setStartQuizBtnVisibility(value: Boolean){
         _startQuizBtnVisible.value = value
-        Log.d(TAG, "Start btn visibility: $value")
     }
 
     //region button events
+    fun resetBtnClicked(){
+        _uiEvents.value = UiEvent.RESET_BUTTON_CLICKED
+    }
+
     fun startQuizBtnClicked(){
         _uiEvents.value = UiEvent.START_QUIZ_BUTTON_CLICKED
-        Log.d(TAG, "Start btn visibility: ${startQuizBtnVisible.value}")
-        Log.d(TAG, "Start quiz clicked")
     }
     //endregion
 }

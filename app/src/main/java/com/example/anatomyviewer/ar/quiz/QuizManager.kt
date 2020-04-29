@@ -1,9 +1,8 @@
-package com.example.anatomyviewer.ar
+package com.example.anatomyviewer.ar.quiz
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import com.example.anatomyviewer.ar.quiz.QuizCardView
-import com.example.anatomyviewer.ar.quiz.QuizData
+import com.example.anatomyviewer.ar.ArViewModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Frame
 import com.google.ar.sceneform.ArSceneView

@@ -3,7 +3,7 @@ package com.example.anatomyviewer.ar
 import android.content.Context
 import android.util.Log
 import com.example.anatomyviewer.R
-import com.example.anatomyviewer.ar.models.BaseModel
+import com.example.anatomyviewer.ar.helpers.BaseModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.ArSceneView

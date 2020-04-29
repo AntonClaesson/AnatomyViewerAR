@@ -1,4 +1,4 @@
-package com.example.anatomyviewer.ar.models
+package com.example.anatomyviewer.ar.helpers
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.ux.TransformableNode
 

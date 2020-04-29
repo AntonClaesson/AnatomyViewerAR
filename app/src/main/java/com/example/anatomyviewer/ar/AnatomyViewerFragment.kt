@@ -9,9 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.anatomyviewer.ar.di.ArModule
 import com.example.anatomyviewer.ar.di.DaggerArComponent
+import com.example.anatomyviewer.ar.helpers.UiEvent
+import com.example.anatomyviewer.ar.interfaces.ArFragmentResetListener
 import com.google.ar.core.*
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.ux.ArFragment
@@ -22,6 +25,8 @@ import javax.inject.Inject
 open class AnatomyViewerFragment : ArFragment() {
 
     private val TAG = AnatomyViewerFragment::class.java.toString()
+
+    var resetListener: ArFragmentResetListener? = null
 
     // ViewModel containing common data and LiveData for ui-updates
     lateinit var arViewModel: ArViewModel
@@ -81,6 +86,7 @@ open class AnatomyViewerFragment : ArFragment() {
         this.planeDiscoveryController.setInstructionView(null)
         this.arSceneView.planeRenderer.isVisible = false
         setupArOverlay()
+        setupResetObserver()
     }
 
     private fun setupArOverlay() {
@@ -94,7 +100,16 @@ open class AnatomyViewerFragment : ArFragment() {
             arOverlayView.setViewModel(arViewModel, viewLifecycleOwner)
         }
     }
-    
+
+    private fun setupResetObserver() {
+        // Setup a listener for reset-requests in the AR-World in which case this fragment needs to be re-initialized
+        arViewModel.uiEvents.observe(viewLifecycleOwner, Observer {
+            if (it == UiEvent.RESET_BUTTON_CLICKED) {
+                resetListener?.resetArFragment()
+            }
+        })
+    }
+
     private fun setupAugmentedImageDatabase(context: Context, config: Config, session: Session): Boolean {
 
         fun loadAugmentedImageBitmap(imageName: String): Bitmap = context.assets.open(imageName).use { return BitmapFactory.decodeStream(it) }
