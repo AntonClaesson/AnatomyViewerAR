@@ -5,7 +5,10 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.example.anatomyviewer.R
+import com.example.anatomyviewer.ar.helpers.UiEvent
 import com.example.anatomyviewer.ar.ui.ArViewModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.sceneform.AnchorNode
@@ -21,6 +24,7 @@ class ModelManager @Inject constructor(
     private val viewModel: ArViewModel,
     private val arSceneView: ArSceneView,
     private val context: Context,
+    private val lifecycleOwner: LifecycleOwner,
     private val transformationSystem: TransformationSystem) {
 
     private val TAG = ModelManager::class.java.toString()
@@ -37,6 +41,16 @@ class ModelManager @Inject constructor(
 
     fun startExplorationMode(){
         viewModel.setSettingsBtnVisibility(true)
+        viewModel.uiEvents.observe(lifecycleOwner, Observer {
+            if(it == UiEvent.SETTINGS_CONFIRMED_CLICKED){
+                val showSkin = viewModel.modelSkinVisibility.value ?: return@Observer
+                if(showSkin){
+                    baseModel?.baseNode?.renderable?.material = defaultMaterials[baseModel?.modelID]
+                } else {
+                    baseModel?.baseNode?.renderable?.material = customMaterials[R.raw.transparent]
+                }
+            }
+        })
     }
 
     private fun createCustomMaterials(){
@@ -88,7 +102,7 @@ class ModelManager @Inject constructor(
             // Create the anchor attached to the image
             val anchor = trackedImage.createAnchor(trackedImage.centerPose)
             baseModel.modelAnchorNode = AnchorNode(anchor).apply {
-                setParent(arSceneView?.scene)
+                setParent(arSceneView.scene)
             }
 
             // Create the base model node and attach it to the model anchor node
