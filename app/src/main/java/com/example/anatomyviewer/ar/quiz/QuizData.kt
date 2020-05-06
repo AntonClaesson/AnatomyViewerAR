@@ -1,8 +1,10 @@
 package com.example.anatomyviewer.ar.quiz
 
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.anatomyviewer.R
 
 class QuizData: ViewModel() {
 
@@ -38,6 +40,11 @@ class QuizData: ViewModel() {
     private val _selectedOption = MutableLiveData<Int>(null)
     val selectedOption: LiveData<Int> = _selectedOption
 
+    private val _modelToHighlight = MutableLiveData<Int?>(null)
+    val modelToHighLight: LiveData<Int?> = _modelToHighlight
+
+    private val _clearCheck = MutableLiveData(false)
+    val clearCheck: LiveData<Boolean> = _clearCheck
 
     fun makeNewQuiz(quizType: QuizType) {
         activeQuiz = when (quizType) {
@@ -53,10 +60,12 @@ class QuizData: ViewModel() {
 
 
     fun clickedConfirmed(){
-        activeQuiz?.let {
+        activeQuiz?.let { it ->
+            clearChecked()
+
             // Check the answer and update score
-            val question = it.getCurrentQuestion() ?: return // TODO: handle finished
-            val guess = selectedOption.value ?: return // TODO: Handle not selected
+            val question = it.getCurrentQuestion() ?: return
+            val guess = selectedOption.value ?: return
 
             if (it.guessOption(guess, question)) {
                 it.addScore(1)
@@ -66,6 +75,16 @@ class QuizData: ViewModel() {
             }
             //Update the question and the labels
             it.nextQuestion()
+
+            //Highlight model part if needed
+            it.getCurrentQuestion()?.let { q ->
+                if (q.highLightModel != null) {
+                    _modelToHighlight.value = q.highLightModel
+                } else {
+                    _modelToHighlight.value = null
+                }
+            }
+
             updateLabelsForQuiz(it)
         }
 
@@ -89,15 +108,24 @@ class QuizData: ViewModel() {
         }
     }
 
+    private fun clearChecked(){
+        _clearCheck.value = true
+    }
+
     private fun updateLabelsForQuiz(it: Quiz){
         updateScoreLabel()
-        _questionNumbText.value = "Question: ${it.getCurrentQuestionIndex()+1}/${it.questions.count()}"
-        _timeText.value = "00:00"
 
-        _questionText.value = it.getCurrentQuestion()?.questionText
-        _opt1Text.value = it.getCurrentQuestion()?.opt1Text
-        _opt2Text.value = it.getCurrentQuestion()?.opt2Text
-        _opt3Text.value = it.getCurrentQuestion()?.opt3Text
+        if (activeQuiz?.quizFinished == true) {
+
+        } else {
+            _questionNumbText.value = "Question: ${it.getCurrentQuestionIndex()+1}/${it.questions.count()}"
+            _timeText.value = "00:00"
+
+            _questionText.value = it.getCurrentQuestion()?.questionText
+            _opt1Text.value = it.getCurrentQuestion()?.opt1Text
+            _opt2Text.value = it.getCurrentQuestion()?.opt2Text
+            _opt3Text.value = it.getCurrentQuestion()?.opt3Text
+        }
     }
 
     private fun updateScoreLabel(){
@@ -108,48 +136,77 @@ class QuizData: ViewModel() {
 
     private fun createQuiz1(): Quiz {
         val q1 = Question(
-            questionText = "What is the kneekap?",
-            opt1Text = "opt1",
-            opt2Text = "opt2",
-            opt3Text = "opt3",
-            correctOption = 1
+            questionText = "How many sections of bone does the thumb have?",
+            opt1Text = "2",
+            opt2Text = "3",
+            opt3Text = "4",
+            correctOption = 3
         )
 
         val q2 = Question(
-            questionText = "Where is the elbow found?",
+            questionText = "How many bones are connected to the hand from the arm?",
             opt1Text = "1",
             opt2Text = "2",
-            opt3Text = "3",
+            opt3Text = "4",
+            correctOption = 2
+        )
+
+        val q3 = Question(
+            questionText = "How many fingers are there?",
+            opt1Text = "4",
+            opt2Text = "5",
+            opt3Text = "6",
             correctOption = 2
         )
 
         val questions = mutableListOf<Question>()
         questions.add(q1)
         questions.add(q2)
+        questions.add(q3)
 
         return Quiz(questions)
     }
 
     private fun createQuiz2(): Quiz {
         val q1 = Question(
-            questionText = "Question 1",
-            opt1Text = "opt1",
-            opt2Text = "opt2",
-            opt3Text = "opt3",
-            correctOption = 1
+            questionText = "Which organs are visible in the model?",
+            opt1Text = "Brain and lungs",
+            opt2Text = "Heart and liver",
+            opt3Text = "Heart and kidneys",
+            correctOption = 3
         )
 
         val q2 = Question(
-            questionText = "Question 2",
-            opt1Text = "opt1",
-            opt2Text = "opt2",
-            opt3Text = "opt3",
+            questionText = "What is the highlighted organ called?",
+            opt1Text = "Kidneys",
+            opt2Text = "Heart",
+            opt3Text = "Bladder",
+            correctOption = 1,
+            highLightModel = R.raw.abdomen_kidneys
+        )
+
+        val q3 = Question(
+            questionText = "What is the purpose of the rib cage?",
+            opt1Text = "To make the skeleton cooler",
+            opt2Text = "Protecting vital organs",
+            opt3Text = "It has no use",
             correctOption = 2
+        )
+
+        val q4 = Question(
+            questionText = "What is the name of the highlighted organ?",
+            opt1Text = "Heart",
+            opt2Text = "Stomach",
+            opt3Text = "Lungs",
+            correctOption = 1,
+            highLightModel = R.raw.abdomen_heart
         )
 
         val questions = mutableListOf<Question>()
         questions.add(q1)
         questions.add(q2)
+        questions.add(q3)
+        questions.add(q4)
 
         return Quiz(questions)
     }

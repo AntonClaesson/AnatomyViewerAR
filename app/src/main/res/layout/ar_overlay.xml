@@ -5,6 +5,10 @@
 
     <data>
         <import type="android.view.View"/>
+        <import
+            alias="ExtensionFunctions"
+            type="com.example.anatomyviewer.ar.ui.ExtensionsKt"
+            />
         <variable
             name="arViewModel"
             type="com.example.anatomyviewer.ar.ui.ArViewModel" />

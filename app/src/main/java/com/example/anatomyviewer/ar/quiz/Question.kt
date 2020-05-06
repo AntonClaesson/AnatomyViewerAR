@@ -5,5 +5,6 @@ data class Question(
     val opt1Text: String,
     val opt2Text: String,
     val opt3Text: String,
-    val correctOption: Int
+    val correctOption: Int,
+    val highLightModel: Int? = null
 ) {}

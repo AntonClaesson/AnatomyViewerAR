@@ -1,6 +1,7 @@
 package com.example.anatomyviewer.ar.model
 
 import android.content.Context
+import android.graphics.ColorSpace
 import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -32,6 +33,9 @@ class ModelManager @Inject constructor(
     private var baseModel: BaseModel? = null
     private var defaultMaterials: HashMap<Int, Material> = hashMapOf()
     private var customMaterials: HashMap<Int, Material> = hashMapOf()
+
+    private var highlightedModel: ModelRenderable? = null
+    private var highlightedModelId: Int? = null
 
     private var explorationMode: Boolean = false
 
@@ -67,6 +71,21 @@ class ModelManager @Inject constructor(
             val yellowMaterial = renderable.material
             customMaterials[R.raw.yellow_opaque] = yellowMaterial
         }
+    }
+
+    fun highlightChildModel(childModel: Int){
+        val childRenderable = baseModel?.childModelRenderables?.get(childModel) ?: return
+        childRenderable.material = customMaterials[R.raw.yellow_opaque]
+        highlightedModel = childRenderable
+        highlightedModelId = childModel
+    }
+
+    fun resetHighlightedModelMaterial(){
+        val modelRenderable = highlightedModel ?: return
+        val modelID = highlightedModelId ?: return
+        modelRenderable.material = defaultMaterials[modelID]
+        highlightedModel = null
+        highlightedModelId = null
     }
 
     // Adds the 3D model corresponding to the tracked image to the scene.
@@ -134,6 +153,8 @@ class ModelManager @Inject constructor(
         baseModel.childModelIDs.forEach { model ->
             ModelRenderable.builder().setSource(context, model).build().thenAccept { renderable ->
                 (baseModel.baseNode)?.let { baseNode ->
+                    // Save the renderable of the child model for easy access
+                    baseModel.childModelRenderables[model] = renderable
 
                     //Save the materials of the child models
                     defaultMaterials[model] = renderable.material

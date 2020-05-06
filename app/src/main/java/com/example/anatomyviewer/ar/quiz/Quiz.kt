@@ -8,7 +8,7 @@ class Quiz(val questions: MutableList<Question>) {
     private var time: String = ""
 
     private var currentQuestionIndex =  0
-
+    
     fun getCurrentQuestion(): Question? {
         if (quizFinished) {
             return null

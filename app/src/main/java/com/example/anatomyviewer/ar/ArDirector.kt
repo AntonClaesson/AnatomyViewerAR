@@ -33,6 +33,15 @@ class ArDirector @Inject constructor(
     fun start(){
         observeImageTracking()
         Toast.makeText(context, "Search image", Toast.LENGTH_LONG).show()
+
+        //Observer for highliting parts of model if quiz question demands it
+        quizManager.quizData.modelToHighLight.observe(lifecycleOwner, Observer {
+            if(it != null){
+                modelManager.highlightChildModel(it)
+            } else {
+                modelManager.resetHighlightedModelMaterial()
+            }
+        })
     }
 
     fun onUpdate(frame: Frame){

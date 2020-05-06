@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
+        <import
+            alias="ExtensionFunctions"
+            type="com.example.anatomyviewer.ar.ui.ExtensionsKt"
+            />
         <variable
             name="quizData"
             type="com.example.anatomyviewer.ar.quiz.QuizData" />
@@ -21,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{quizData.scoreLabelText}"
+            tools:text="Score: 0"
             android:textColor="@android:color/black" />
 
         <TextView
@@ -29,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/text_view_score"
             android:text="@{quizData.questionNumbText}"
+            tools:text="Question: 1/10"
             android:textColor="@android:color/black" />
 
         <TextView
@@ -37,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:text="@{quizData.timeText}"
+            tools:text="00:00"
             android:textColor="@android:color/black"
             android:textSize="40sp" />
 
@@ -47,6 +55,7 @@
             android:layout_above="@id/radio_group"
             android:layout_marginBottom="16dp"
             android:text="@{quizData.questionText}"
+            tools:text="Question text here Question text here Question text here Question text here "
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
@@ -58,6 +67,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:clearChecked="@{quizData.clearCheck}"
             >
 
             <RadioButton
@@ -66,7 +76,8 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:onClick="@{() -> quizData.opt1Clicked()}"
-                android:text="@{quizData.opt1Text}" />
+                android:text="@{quizData.opt1Text}"
+                tools:text="Option 1 Option 1 Option 1 Option 1 Option 1 Option 1 Option 1 "/>
 
             <RadioButton
                 android:id="@+id/radio_button2"
@@ -74,7 +85,8 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:onClick="@{() -> quizData.opt2Clicked()}"
-                android:text="@{quizData.opt2Text}" />
+                android:text="@{quizData.opt2Text}"
+                tools:text="Option 2"/>
 
             <RadioButton
                 android:id="@+id/radio_button3"
@@ -82,7 +94,8 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:onClick="@{() -> quizData.opt3Clicked()}"
-                android:text="@{quizData.opt3Text}" />
+                android:text="@{quizData.opt3Text}"
+                tools:text="Option 3"/>
 
         </RadioGroup>
 

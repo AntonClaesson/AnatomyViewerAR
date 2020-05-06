@@ -1,10 +1,13 @@
 package com.example.anatomyviewer.ar.quiz
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.example.anatomyviewer.ar.ui.ArViewModel
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Frame
+import com.google.ar.core.Pose
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
@@ -19,9 +22,10 @@ class QuizManager @Inject constructor(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner
 ) {
+    private val TAG = QuizManager::class.java.toString()
 
     private var quizCardNode: Node? = null
-    private val quizData: QuizData = QuizData()
+    val quizData: QuizData = QuizData()
 
     fun onUpdate(frame: Frame){
         updateCardNodeForFrame(frame, quizCardNode)
@@ -38,8 +42,8 @@ class QuizManager @Inject constructor(
         cardNode.worldRotation = lookRotation
     }
 
-    fun createQuizForImage(image: AugmentedImage?) {
-        val id = image?.name ?: return
+    fun createQuizForImage(image: AugmentedImage) {
+        val id = image.name
         when (id) {
             viewModel.IMAGE_1_NAME -> { QuizData.QuizType.MODEL1 }
             viewModel.IMAGE_2_NAME -> { QuizData.QuizType.MODEL2 }
@@ -50,7 +54,15 @@ class QuizManager @Inject constructor(
 
         val quizNode = Node()
         quizNode.setParent(arSceneView.scene)
-        quizNode.localPosition = Vector3(0f,-1f,-2f)
+        quizNode.worldPosition = Vector3(0f,-0f,-0f)
+
+        //If camera pos available instead place quiz in front of camera
+        arSceneView.arFrame?.camera?.let {
+            val translationPose = Pose.makeTranslation(0f, 0f,-2f)
+            val quizPose = it.pose.compose(translationPose).extractTranslation()
+            quizNode.worldPosition= Vector3(quizPose.tx(), -1f ,quizPose.tz())
+        }
+
 
         val quizCardView = QuizCardView(context)
         quizCardView.setQuizData(quizData, lifecycleOwner)
