@@ -67,7 +67,7 @@ class QuizManager @Inject constructor(
         val quizCardView = QuizCardView(context)
         quizCardView.setQuizData(quizData, lifecycleOwner)
 
-        val dpm = 250 //Default 250 dpm
+        val dpm = 350 //Default 250 dpm
         ViewRenderable.builder().setView(context, quizCardView).build()
             .thenAccept { viewRenderable ->
                 viewRenderable.setSizer { DpToMetersViewSizer(dpm).getSize(viewRenderable.view) }

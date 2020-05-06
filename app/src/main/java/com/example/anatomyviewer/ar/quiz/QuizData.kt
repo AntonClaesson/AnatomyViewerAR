@@ -46,6 +46,15 @@ class QuizData: ViewModel() {
     private val _clearCheck = MutableLiveData(false)
     val clearCheck: LiveData<Boolean> = _clearCheck
 
+    //Livedata for finished quiz ----
+    private val _quizFinished = MutableLiveData(false)
+    val quizFinished: LiveData<Boolean> = _quizFinished
+
+    private val _quizFinishedText = MutableLiveData("")
+    val quizFinishedText: LiveData<String> = _quizFinishedText
+
+
+
     fun makeNewQuiz(quizType: QuizType) {
         activeQuiz = when (quizType) {
             QuizType.MODEL1 -> { createQuiz1() }
@@ -53,7 +62,8 @@ class QuizData: ViewModel() {
         }
 
         activeQuiz?.let {
-           updateLabelsForQuiz(it)
+            _quizFinished.value = false
+            updateLabelsForQuiz(it)
         }
     }
 
@@ -85,7 +95,13 @@ class QuizData: ViewModel() {
                 }
             }
 
-            updateLabelsForQuiz(it)
+            if (it.quizFinished){
+                handleQuizFinished(it)
+            } else {
+                updateLabelsForQuiz(it)
+            }
+
+            _selectedOption.value = null
         }
 
     }
@@ -112,20 +128,22 @@ class QuizData: ViewModel() {
         _clearCheck.value = true
     }
 
+    private fun handleQuizFinished(quiz: Quiz){
+        _quizFinished.value = true
+        _modelToHighlight.value = null
+        _quizFinishedText.value = "Quiz finished!\nScore: ${quiz.getScore()}/${quiz.questions.count()}"
+
+    }
+
     private fun updateLabelsForQuiz(it: Quiz){
         updateScoreLabel()
+        _questionNumbText.value = "Question: ${it.getCurrentQuestionIndex()+1}/${it.questions.count()}"
+        _timeText.value = "00:00"
 
-        if (activeQuiz?.quizFinished == true) {
-
-        } else {
-            _questionNumbText.value = "Question: ${it.getCurrentQuestionIndex()+1}/${it.questions.count()}"
-            _timeText.value = "00:00"
-
-            _questionText.value = it.getCurrentQuestion()?.questionText
-            _opt1Text.value = it.getCurrentQuestion()?.opt1Text
-            _opt2Text.value = it.getCurrentQuestion()?.opt2Text
-            _opt3Text.value = it.getCurrentQuestion()?.opt3Text
-        }
+        _questionText.value = it.getCurrentQuestion()?.questionText
+        _opt1Text.value = it.getCurrentQuestion()?.opt1Text
+        _opt2Text.value = it.getCurrentQuestion()?.opt2Text
+        _opt3Text.value = it.getCurrentQuestion()?.opt3Text
     }
 
     private fun updateScoreLabel(){
@@ -140,7 +158,7 @@ class QuizData: ViewModel() {
             opt1Text = "2",
             opt2Text = "3",
             opt3Text = "4",
-            correctOption = 3
+            correctOption = 2
         )
 
         val q2 = Question(
