@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.anatomyviewer.R
 import com.example.anatomyviewer.ar.di.ArModule
 import com.example.anatomyviewer.ar.di.DaggerArComponent
 import com.example.anatomyviewer.ar.helpers.UiEvent
@@ -44,7 +45,6 @@ open class AnatomyViewerFragment : ArFragment() {
 
         injectArOrganizer()
         arDirector.start()
-
         return view
     }
 

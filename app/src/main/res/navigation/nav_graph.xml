@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeScreen">
+
+    <fragment
+        android:id="@+id/welcomeScreen"
+        android:name="com.example.anatomyviewer.main.WelcomeScreen"
+        android:label="WelcomeScreen" >
+        <action
+            android:id="@+id/action_welcomeScreen_to_arMainFragment"
+            app:destination="@id/arMainFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/arMainFragment"
+        android:name="com.example.anatomyviewer.ar.ArMainFragment"
+        android:label="ArMainFragment" />
+</navigation>
