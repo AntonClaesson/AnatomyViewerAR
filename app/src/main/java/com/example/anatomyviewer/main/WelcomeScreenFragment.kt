@@ -6,9 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.anatomyviewer.R
 
@@ -26,8 +23,13 @@ class WelcomeScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.button_first).setOnClickListener {
+        view.findViewById<Button>(R.id.play_button).setOnClickListener {
            val action =  WelcomeScreenFragmentDirections.actionWelcomeScreenToAnatomyViewerFragment()
+            findNavController().navigate(action)
+        }
+
+        view.findViewById<Button>(R.id.to_rules_button).setOnClickListener {
+            val action =  WelcomeScreenFragmentDirections.actionWelcomeScreenToRulesFragment()
             findNavController().navigate(action)
         }
     }

@@ -7,23 +7,37 @@
     android:background="@android:color/white"
     tools:context=".main.WelcomeScreenFragment">
 
-    <TextView
-        android:id="@+id/textview_first"
+    <Button
+        android:id="@+id/to_rules_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment"
-        app:layout_constraintBottom_toTopOf="@id/button_first"
+        android:text="@string/rules_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_title"
+        app:layout_constraintVertical_bias="0.661" />
+
+    <TextView
+        android:id="@+id/welcome_title"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_text_welcome"
+        android:text="@string/welcome_screen_text"
+        android:textSize="@dimen/text_size_app_title"
+        app:layout_constraintBottom_toTopOf="@id/play_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_first"
+        android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play_game"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_first" />
+        app:layout_constraintTop_toBottomOf="@id/welcome_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

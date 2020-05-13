@@ -10,6 +10,9 @@
         <action
             android:id="@+id/action_welcomeScreen_to_anatomyViewerFragment"
             app:destination="@id/anatomyViewerFragment" />
+        <action
+            android:id="@+id/action_welcomeScreen_to_rulesFragment"
+            app:destination="@id/rulesFragment" />
     </fragment>
     <fragment
         android:id="@+id/anatomyViewerFragment"
@@ -19,5 +22,13 @@
             android:id="@+id/action_anatomyViewerFragment_self"
             app:destination="@id/anatomyViewerFragment"
             app:launchSingleTop="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/rulesFragment"
+        android:name="com.example.anatomyviewer.main.RulesFragment"
+        android:label="RulesFragment" >
+        <action
+            android:id="@+id/action_rulesFragment_to_welcomeScreen"
+            app:destination="@id/welcomeScreen" />
     </fragment>
 </navigation>
