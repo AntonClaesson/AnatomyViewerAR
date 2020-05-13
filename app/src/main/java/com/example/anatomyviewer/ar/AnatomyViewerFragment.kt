@@ -11,11 +11,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.anatomyviewer.R
+import androidx.navigation.fragment.findNavController
 import com.example.anatomyviewer.ar.di.ArModule
 import com.example.anatomyviewer.ar.di.DaggerArComponent
 import com.example.anatomyviewer.ar.helpers.UiEvent
-import com.example.anatomyviewer.ar.interfaces.ArFragmentResetListener
 import com.example.anatomyviewer.ar.ui.ArOverlayView
 import com.example.anatomyviewer.ar.ui.ArViewModel
 import com.google.ar.core.*
@@ -28,8 +27,6 @@ import javax.inject.Inject
 open class AnatomyViewerFragment : ArFragment() {
 
     private val TAG = AnatomyViewerFragment::class.java.toString()
-
-    var resetListener: ArFragmentResetListener? = null
 
     // ViewModel containing common data and LiveData for ui-updates
     lateinit var arViewModel: ArViewModel
@@ -79,7 +76,7 @@ open class AnatomyViewerFragment : ArFragment() {
         // This makes dagger inject the ArOrganizer, and all its dependencies.
         //Make dagger inject arOrganizer and all of its dependencies
         DaggerArComponent.builder().arModule(
-            ArModule(arViewModel, arSceneView,transformationSystem, context!!, viewLifecycleOwner)
+            ArModule(arViewModel, arSceneView,transformationSystem, requireContext(), viewLifecycleOwner)
         ).build().inject(this)
     }
 
@@ -109,7 +106,8 @@ open class AnatomyViewerFragment : ArFragment() {
         // Setup a listener for reset-requests in the AR-World in which case this fragment needs to be re-initialized
         arViewModel.uiEvents.observe(viewLifecycleOwner, Observer {
             if (it == UiEvent.RESET_BUTTON_CLICKED) {
-                resetListener?.resetArFragment()
+                this.arSceneView.pause()
+                findNavController().navigate(AnatomyViewerFragmentDirections.actionAnatomyViewerFragmentSelf())
             }
         })
     }

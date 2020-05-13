@@ -6,5 +6,18 @@
     <fragment
         android:id="@+id/welcomeScreen"
         android:name="com.example.anatomyviewer.main.WelcomeScreenFragment"
-        android:label="WelcomeScreen" />
+        android:label="WelcomeScreen" >
+        <action
+            android:id="@+id/action_welcomeScreen_to_anatomyViewerFragment"
+            app:destination="@id/anatomyViewerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/anatomyViewerFragment"
+        android:name="com.example.anatomyviewer.ar.AnatomyViewerFragment"
+        android:label="AnatomyViewerFragment" >
+        <action
+            android:id="@+id/action_anatomyViewerFragment_self"
+            app:destination="@id/anatomyViewerFragment"
+            app:launchSingleTop="true"/>
+    </fragment>
 </navigation>

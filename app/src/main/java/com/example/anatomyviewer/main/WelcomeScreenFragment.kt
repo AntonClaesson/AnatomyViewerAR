@@ -15,8 +15,6 @@ import com.example.anatomyviewer.R
 
 class WelcomeScreenFragment : Fragment() {
 
-    var listener: OpenArFragmentListener? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,7 +27,8 @@ class WelcomeScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            listener?.openArFragmentRequest()
+           val action =  WelcomeScreenFragmentDirections.actionWelcomeScreenToAnatomyViewerFragment()
+            findNavController().navigate(action)
         }
     }
 

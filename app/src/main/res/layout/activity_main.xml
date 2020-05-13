@@ -7,47 +7,16 @@
             name="mainActivityViewModel"
             type="com.example.anatomyviewer.main.MainActivityViewModel" />
     </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <FrameLayout
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
 
-            <fragment
-                android:id="@+id/anatomy_viewer_fragment"
-                android:name="com.example.anatomyviewer.ar.AnatomyViewerFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-            </fragment>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/start_menu_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.drawerlayout.widget.DrawerLayout
-                android:id="@+id/drawerLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-                    <fragment
-                        android:id="@+id/myNavHostFragment"
-                        android:name="androidx.navigation.fragment.NavHostFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:defaultNavHost="true"
-                        app:navGraph="@navigation/nav_graph" />
-                </LinearLayout>
-            </androidx.drawerlayout.widget.DrawerLayout>
-        </FrameLayout>
-
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
