@@ -24,10 +24,5 @@ class RulesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        view.findViewById<Button>(R.id.back_button).setOnClickListener {
-            val action =  RulesFragmentDirections.actionRulesFragmentToWelcomeScreen()
-            findNavController().navigate(action)
-        }
     }
 }

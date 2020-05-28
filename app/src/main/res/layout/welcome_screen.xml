@@ -7,17 +7,6 @@
     android:background="@android:color/white"
     tools:context=".main.WelcomeScreenFragment">
 
-    <Button
-        android:id="@+id/to_rules_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/rules_title"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome_title"
-        app:layout_constraintVertical_bias="0.661" />
-
     <TextView
         android:id="@+id/welcome_title"
         style="@style/AppTheme"

@@ -28,10 +28,6 @@ class WelcomeScreenFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        view.findViewById<Button>(R.id.to_rules_button).setOnClickListener {
-            val action =  WelcomeScreenFragmentDirections.actionWelcomeScreenToRulesFragment()
-            findNavController().navigate(action)
-        }
     }
 
 }
