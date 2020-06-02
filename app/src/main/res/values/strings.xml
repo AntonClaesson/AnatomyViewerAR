@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">AnatomyViewer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="welcome_screen_text">Anatomy Viewer AR</string>
+    <string name="play_game">Play game</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="rules_title">Rules</string>
+    <string name="back_button">Back</string>
+    <string name="rules_text">The rules of the game are: \n\n Tap play when you are ready, this will take you into the AR world \n \n Explore the AR word following the directions given on the screen \n\n You can at any point reset the AR world if you are having difficulties \n\n Begin the quiz when you are ready</string>
 </resources>

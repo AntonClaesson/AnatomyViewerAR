@@ -2,43 +2,54 @@ package com.example.anatomyviewer.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+
 import com.example.anatomyviewer.R
-import com.example.anatomyviewer.ar.AnatomyViewerFragment
-import com.example.anatomyviewer.ar.interfaces.ArFragmentResetListener
+
 import com.example.anatomyviewer.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), ArFragmentResetListener {
+class MainActivity : AppCompatActivity() {
 
     private val TAG: String = MainActivity::class.java.toString()
 
     private lateinit var binding: ActivityMainBinding
-
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
-    lateinit var arFragment: AnatomyViewerFragment
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        setupDataBinding()
+        setupViewModel()
 
+        drawerLayout = binding.drawerLayout
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+        NavigationUI.setupWithNavController(binding.navView, navController)
+    }
+
+    private fun setupDataBinding(){
         binding = DataBindingUtil.setContentView(this,
             R.layout.activity_main
         )
         binding.lifecycleOwner = this
-        binding.mainActivityViewModel = mainActivityViewModel
-
-        arFragment = supportFragmentManager.findFragmentById(R.id.anatomy_viewer_fragment) as AnatomyViewerFragment
-        arFragment.resetListener = this
     }
 
-    override fun resetArFragment() {
-        // Pause the old ar experience
-        arFragment.arSceneView.pause()
-        // Create a new one
-        val newArFragment = AnatomyViewerFragment()
-        newArFragment.resetListener = this
-        supportFragmentManager.beginTransaction().replace(R.id.anatomy_viewer_fragment, newArFragment).commit()
+    private fun setupViewModel(){
+        mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        binding.mainActivityViewModel = mainActivityViewModel
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
     }
 }

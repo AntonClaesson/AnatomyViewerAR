@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeScreen">
+
+    <fragment
+        android:id="@+id/welcomeScreen"
+        android:name="com.example.anatomyviewer.main.WelcomeScreenFragment"
+        android:label="WelcomeScreen" >
+        <action
+            android:id="@+id/action_welcomeScreen_to_anatomyViewerFragment"
+            app:destination="@id/anatomyViewerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/anatomyViewerFragment"
+        android:name="com.example.anatomyviewer.ar.AnatomyViewerFragment"
+        android:label="AnatomyViewerFragment" >
+        <action
+            android:id="@+id/action_anatomyViewerFragment_self"
+            app:destination="@id/anatomyViewerFragment"
+            app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_anatomyViewerFragment_to_welcomeScreen"
+            app:destination="@id/welcomeScreen"
+            app:launchSingleTop="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/rulesFragment"
+        android:name="com.example.anatomyviewer.main.RulesFragment"
+        android:label="RulesFragment" />
+</navigation>
