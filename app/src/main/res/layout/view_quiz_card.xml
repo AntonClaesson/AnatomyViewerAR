@@ -27,6 +27,7 @@
 
             <TextView
                 android:id="@+id/text_view_score"
+                android:textSize="45dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{quizData.scoreLabelText}"
@@ -35,6 +36,7 @@
 
             <TextView
                 android:id="@+id/text_view_question_count"
+                android:textSize="30dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_view_score"
@@ -43,14 +45,16 @@
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/text_view_countdown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="@{quizData.timeText}"
-                tools:text="00:00"
-                android:textColor="@android:color/black"
-                android:textSize="40sp" />
+            android:visibility="gone"
+            android:id="@+id/text_view_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@{quizData.timeText}"
+            tools:text="00:00"
+            android:textColor="@android:color/black"
+            android:textSize="40sp"/>
+
 
             <TextView
                 android:id="@+id/text_view_question"
@@ -117,7 +121,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
+            android:background="@android:color/holo_green_light"
             android:visibility="@{quizData.quizFinished ? View.VISIBLE : View.GONE}"
             >
 
@@ -131,8 +135,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Quiz finished!\nScore: 0/10" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
