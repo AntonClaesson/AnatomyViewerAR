@@ -12,4 +12,4 @@ Alternatively, use a tablet or cell phone to display the picture.
 
 # Installation notes
 
-You probably have to install [the Sceneform plugin for Android Studio](https://developers.google.com/sceneform/develop/getting-started#import-sceneform-plugin) (v.15 or below, v.16 introduced big changes which might break the project) 
+You probably have to install [the Google Sceneform Tools plugin for Android Studio](https://developers.google.com/sceneform/develop/getting-started#import-sceneform-plugin) in order to build the project.
