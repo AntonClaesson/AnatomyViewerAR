@@ -9,3 +9,7 @@ Alternatively, use a tablet or cell phone to display the picture.
 
 ![Picture 1](app/src/main/assets/abdomen_no_skin.png)
 ![Picture 2](app/src/main/assets/hand_bone.png)
+
+# Installation notes
+
+You probably have to install [the Sceneform plugin for Android Studio](https://developers.google.com/sceneform/develop/getting-started#import-sceneform-plugin) in order to build the project.
